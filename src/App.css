@@ -1,0 +1,109 @@
+/* error */
+form .error {
+  border: 1px solid #F00 !important;
+}
+form .error-msg {
+  color: #F00;
+  font-size: 16px;
+}
+.form-label {
+  margin-bottom: 0px;
+}
+/** main container for stick-footer**/
+.main-container{
+  min-height:calc(100vh - 125px); 
+}
+
+/* disabled */
+input[disabled], 
+select[disabled], 
+textarea[disabled], 
+button[disabled], 
+a[disabled]{
+  background-color: #6c757d !important;
+  background: #6c757d !important;
+  cursor: not-allowed;
+}
+
+.sidebar .sidebar-menu {
+  padding: 8px 0px 20px 0px;
+  width: 260px;
+}
+
+/* placeholder */
+input::placeholder,
+textarea::placeholder {
+  color: #c7c7c7 !important;
+}
+
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.required{  
+  color: red;
+  font-size: 16px;
+  font-weight: bold;  
+}
+
+/* sweetalert2 */
+div:where(.swal2-container) h2:where(.swal2-title) {
+  position: relative;
+  max-width: 100%;
+  margin: 0;
+  padding: .8em 1em 0;
+  color: inherit;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: none;
+  word-wrap: break-word;
+}
+div:where(.swal2-container) .swal2-html-container {
+  z-index: 1;
+  justify-content: center;
+  margin: 0;
+  padding: 1em 1.6em .3em;
+  overflow: auto;
+  color: inherit;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: normal;
+  text-align: center;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+.swal2-modal{
+  padding: 20px;
+}
+
+
+/**** alert ****/
+.alert-dismissible .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: .75rem 1.25rem;
+  color: inherit;
+}
+button.close {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  -webkit-appearance: none;
+}
+.close {
+  float: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .5;
+}
+.vr{
+  margin: 0 10px;
+}
