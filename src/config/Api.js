@@ -1,13 +1,14 @@
 import axios from "axios";
 import all_function from './all_function';
 
+
 const baseURL = process.env.REACT_APP_USER_API_URL;
 const axiosInstance = axios.create({
   baseURL: baseURL,
-  //timeout: 20000,    
+  //timeout: 20000,  
 });
 axiosInstance.interceptors.request.use(function (config) {
-  let access_token = localStorage.getItem(process.env.REACT_APP_PREFIX + 'access_token') ?? '';
+  let access_token = localStorage.getItem(process.env.REACT_APP_PREFIX + 'access_token') ?? '';  
   //config.headers["Content-Type"] = "application/json";   
   config.headers["Authorization"] = "Bearer " + access_token;
   return config;
@@ -68,7 +69,7 @@ export default {
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });   
-},
+  },
   register: async (obj) => { 
       return await axiosInstance.post(
         "/register",
@@ -110,127 +111,300 @@ export default {
       .catch((err) => { console.log('err', err); });    
   },
 
-  //=== user apis ===
-  user_row: async (obj) => { 
-      return await axiosInstance.get(
-        "/users/"+obj.user_id+"/",
-        {headers:headers1}        
-      )
-      .catch((err) => { console.log('err', err); }); 
-  }, 
-  update_name: async (obj) => { 
+  //=== my profile ===
+  update_profile: async (obj) => { 
     return await axiosInstance.patch(
-      "/users/update_name/"+obj.user_id,
+      "/users/"+obj.id,
       {
-        'name':obj.name,         
+        'username':obj.username,
+        'email':obj.email,
+        'phone':obj.phone,    
       },     
       {headers:headers1}           
     )
     .catch((err) => { console.log('err', err); });    
-  },   
-  update_email: async (obj) => { 
-    return await axiosInstance.patch(
-      "/users/update_email/"+obj.user_id,
-      {
-        'email':obj.email,         
-      }, 
-      {headers:headers1}               
-    )
-    .catch((err) => { console.log('err', err); });       
-  },   
-  update_phone: async (obj) => { 
-    return await axiosInstance.patch(
-      "/users/update_phone/"+obj.user_id,
-      {
-        'phone':obj.phone,         
-      },  
-      {headers:headers1}              
-    )
-    .catch((err) => { console.log('err', err); });    
   },  
-  update_about_me: async (obj) => { 
+  update_password: async (obj) => {     
     return await axiosInstance.patch(
-      "/users/update_about_me/"+obj.user_id,
+      "/users/"+obj.id,
       {
-        'about_me':obj.about_me,         
-      }, 
-      {headers:headers1}               
+        'password':obj.password,        
+      },     
+      {headers:headers1}           
     )
     .catch((err) => { console.log('err', err); });    
-  },   
-  upload_profile_image: async (obj) => { 
-    return await axiosInstance.post(
-      "/users/upload_profile_image/"+obj.user_id,
-      obj.formData, 
-      {headers:headers2}        
-    )
-    .catch((err) => { console.log('err', err); });    
-  }, 
+  },
 
-  //=== device apis ===  
-  devices: async (obj) => { 
+  //=== companies ===
+  companies: async (obj) => { 
     return await axiosInstance.get(
-      "/devices",
+      `/companies/${ obj.page ? '?page='+ obj.page : ''}`,
       {
         params: {
-          UserID:obj.UserID,
-          page_number: obj.page_number,
-          DeviceName: obj.DeviceName,
-          Status: obj.Status,  
+          name:obj.name,
+          email:obj.email,
+          phone:obj.phone,
+          status:obj.status,
+          page_number: obj.page_number,          
         }
       },
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
-  },
-  delete_multiple_devices: async (obj) => { 
+  },  
+  delete_company: async (obj) => { 
       return await axiosInstance.delete(
-        "/devices/remove-multiple",
-        {
-          params: {
-            UserID:obj.UserID,
-            id: obj.id,           
-          }
-        },
+        "/companies/"+obj.id,      
         {headers:headers1}        
       )
       .catch((err) => { console.log('err', err); });    
   },
-  device_row: async (obj) => { 
-    return await axiosInstance.get(
-      "/devices/"+obj.id,
-      {headers:headers1}        
-    )
-    .catch((err) => { console.log('err', err); });    
- }, 
- create_device: async (obj) => { 
+  company_row: async (obj) => { 
+      return await axiosInstance.get(
+        "/companies/"+obj.id,
+        {headers:headers1}        
+      )
+      .catch((err) => { console.log('err', err); }); 
+  }, 
+  create_company: async (obj) => { 
     return await axiosInstance.post(
-      "/devices/",
-      {        
-        'UserID':obj.UserID,        
-        'DeviceID':obj.DeviceID,  
-        'DeviceName':obj.DeviceName,   
-        'DeviceLocation':obj.DeviceLocation,   
-        'Unit':obj.Unit,   
-        'Status':obj.Status,   
-        'Note':obj.Note, 
+      "/companies/",
+      { 
+        'company':obj.company,        
+        'name':obj.name,        
+        'email':obj.email,  
+        'phone':obj.phone,   
+        'address':obj.address,           
+        'status':obj.status, 
       },
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
   },  
-  update_device: async (obj) => { 
+  update_company: async (obj) => { 
     return await axiosInstance.patch(
-      "/devices/update/"+obj.id,
-      {        
-        'UserID':obj.UserID,        
-        'DeviceID':obj.DeviceID,  
-        'DeviceName':obj.DeviceName,   
-        'DeviceLocation':obj.DeviceLocation,   
-        'Unit':obj.Unit,   
-        'Status':obj.Status,   
-        'Note':obj.Note, 
+      "/companies/"+obj.id,
+      { 
+        'company':obj.company,               
+        'name':obj.name,        
+        'email':obj.email,  
+        'phone':obj.phone,   
+        'address':obj.address,           
+        'status':obj.status, 
       },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  }, 
+
+  //=== company-devices ===
+  company_devices: async (obj) => { 
+    return await axiosInstance.get(
+      `/company-devices/${ obj.page ? '?page='+ obj.page : ''}`,
+      {
+        params: {
+          company:obj.company,
+          device_id:obj.device_id,
+          device_name:obj.device_name,
+          device_location:obj.device_location,
+          unit:obj.unit,
+          status:obj.status,
+          page_number: obj.page_number,          
+        }
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },  
+  delete_company_devices: async (obj) => { 
+      return await axiosInstance.delete(
+        "/company-devices/"+obj.id,      
+        {headers:headers1}        
+      )
+      .catch((err) => { console.log('err', err); });    
+  },
+  company_device_row: async (obj) => { 
+      return await axiosInstance.get(
+        "/company-devices/"+obj.id,
+        {headers:headers1}        
+      )
+      .catch((err) => { console.log('err', err); }); 
+  }, 
+  create_company_device: async (obj) => { 
+    return await axiosInstance.post(
+      "/company-devices/",
+      { 
+        'company':obj.company,               
+        'device_id':obj.device_id,        
+        'device_name':obj.device_name,  
+        'device_location':obj.device_location,   
+        'unit':obj.unit,   
+        'note':obj.note, 
+        'status':obj.status, 
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },  
+  update_company_device: async (obj) => { 
+    return await axiosInstance.patch(
+      "/company-devices/"+obj.id,
+      {        
+        'company':obj.company,               
+        'device_id':obj.device_id,        
+        'device_name':obj.device_name,  
+        'device_location':obj.device_location,   
+        'unit':obj.unit,   
+        'note':obj.note, 
+        'status':obj.status, 
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  }, 
+
+  //=== users ===
+  users: async (obj) => { 
+    return await axiosInstance.get(
+      `/users/${ obj.page ? '?page='+ obj.page : ''}`,
+      {
+        params: {
+          username:obj.username,
+          email:obj.email,
+          phone:obj.phone,
+          role:obj.role,
+          status:obj.status,
+          page_number: obj.page_number,          
+        }
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },  
+  delete_user: async (obj) => { 
+      return await axiosInstance.delete(
+        "/users/"+obj.id,      
+        {headers:headers1}        
+      )
+      .catch((err) => { console.log('err', err); });    
+  },
+  user_row: async (obj) => { 
+      return await axiosInstance.get(
+        "/users/"+obj.id,
+        {headers:headers1}        
+      )
+      .catch((err) => { console.log('err', err); }); 
+  }, 
+  create_user: async (obj) => { 
+    return await axiosInstance.post(
+      "/users/",
+      obj,
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },  
+  update_user: async (obj, id) => { 
+    return await axiosInstance.patch(
+      "/users/"+id,
+      obj,
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  }, 
+
+  //=== device-sensor-data  ===  
+  device_sensor_data: async (obj) => { 
+    return await axiosInstance.get(
+      `/device-sensor-data/${ obj.page ? '?page='+ obj.page : ''}`,
+      {
+        params: {
+          value:obj.value,
+          time: obj.time,
+          device: obj.device,          
+        }
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  }, 
+  delete_device_sensor_data: async (obj) => { 
+    return await axiosInstance.delete(
+      "/device-sensor-data/"+obj.id,      
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },
+  device_sensor_data_row: async (obj) => { 
+    return await axiosInstance.get(
+      "/device-sensor-data/"+obj.id,
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+ }, 
+ create_device_sensor_data: async (obj) => { 
+    return await axiosInstance.post(
+      "/device-sensor-data/",
+      {        
+        'device':obj.device,        
+        'value':obj.value,  
+        'note':obj.note,   
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },  
+  update_device_sensor_data: async (obj) => { 
+    return await axiosInstance.patch(
+      "/device-sensor-data/"+obj.id,
+      {        
+        'device':obj.device,        
+        'value':obj.value,  
+        'note':obj.note,   
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  }, 
+
+  //=== permission  ===  
+  permission: async (obj) => { 
+    return await axiosInstance.get(
+      `/normal-user-permissions/${ obj.page ? '?page='+ obj.page : ''}`,
+      {
+        params: {
+          user:obj.user,         
+        }
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  }, 
+  delete_permission: async (obj) => { 
+    return await axiosInstance.delete(
+      "/normal-user-permissions/"+obj.id,      
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },
+  permission_row: async (obj) => { 
+    return await axiosInstance.get(
+      "/normal-user-permissions/"+obj.id,
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+ }, 
+ create_permission: async (obj) => { 
+    return await axiosInstance.post(
+      "/normal-user-permissions/",
+      obj,
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },  
+  update_permission: async (obj,id) => { 
+    return await axiosInstance.patch(
+      "/normal-user-permissions/"+id,
+      obj,
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    

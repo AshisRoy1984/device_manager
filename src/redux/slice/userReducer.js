@@ -6,7 +6,7 @@ import Api from '../../config/Api';
 export const fetchUser = createAsyncThunk("fetchUser", async ()=>{  
     const promise = new Promise( async (resolve, reject)=>{
         const res = await Api.user_row({
-            'user_id':localStorage.getItem(process.env.REACT_APP_PREFIX + 'user_id'),
+            'id':localStorage.getItem(process.env.REACT_APP_PREFIX + 'user_id'),
         });  
         if(res && res.status===200){
             resolve(res.data) 

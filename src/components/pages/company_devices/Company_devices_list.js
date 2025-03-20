@@ -11,12 +11,12 @@ import Pagination from "../../common/pagination/Pagination";
 import Meta from '../../common/Meta'; 
 import Loader from '../../common/Loader'; 
 
-const Device_list = (props)=>{   
+const Company_devices_list = (props)=>{   
 
     const { company } = useParams();  
 
     const metaData = {
-        meta_title : 'Devices',
+        meta_title : 'Company devices',
         meta_description : '',
         meta_keywords : '',
     }   
@@ -25,7 +25,7 @@ const Device_list = (props)=>{
     const item_per_page = all_function.limit()
     const __filterData = {
         page:queryParams.get('page') ?? 1,	             
-        company: queryParams.get('company') ?? '',	         
+        company: company,        
         device_id:queryParams.get('device_id') ?? '',	
         device_name:queryParams.get('device_name') ?? '',
         device_location:queryParams.get('device_location') ?? '', 	
@@ -36,6 +36,7 @@ const Device_list = (props)=>{
     const [filterData, set_filterData] = useState(__filterData)     
     const [total, set_total] = useState(0)   
     const [data, set_data] = useState([]);  
+    const [companyRow, set_companyRow] = useState("");  
     const [next, set_next] = useState("");   
     const [previous, set_previous] = useState("");  
     const [loader, set_loader] = useState(true);   
@@ -46,6 +47,9 @@ const Device_list = (props)=>{
 
     useEffect(() => {		
         fetchData(page)        
+	},[]); 
+    useEffect(() => {		
+        fetchCompanyRow(company)        
 	},[]); 
 
     const fetchData = async (page)=>{ 
@@ -61,7 +65,8 @@ const Device_list = (props)=>{
         })
 
         if( res && (res.status === 200) ){
-            const resData = res.data;             
+            const resData = res.data; 
+            //console.log(resData)
             set_total(resData.count)
             set_next(resData.next)
             set_previous(resData.previous)
@@ -72,6 +77,15 @@ const Device_list = (props)=>{
         let pageNo = page ?? 1
         set_page(pageNo)
         updateBrowserUrl(pageNo)			
+    }
+    const fetchCompanyRow = async (company)=>{ 
+        const res = await Api.company_row({
+            id:company, 
+        })
+        if( res && (res.status === 200) ){
+            const resData = res.data; 
+            set_companyRow(resData)   
+        }        
     }
     
     const showNext = async (url) => {	
@@ -91,10 +105,7 @@ const Device_list = (props)=>{
 		location.search="";		
         if(page){
           location.searchParams.set('page', page);
-        }   
-        if(filterData.company){			
-            location.searchParams.set('company', filterData.company);        
-        }       
+        }        
         if(filterData.device_id){			
             location.searchParams.set('device_id', filterData.device_id);        
         }  
@@ -202,11 +213,17 @@ const Device_list = (props)=>{
     </HelmetProvider>    
 
     <div className="pagetitle">
-        <h1>Devices</h1>
+        <h1>
+        {
+            companyRow &&
+            <>Devices for : {companyRow.name}</>                
+        }            
+        </h1>
         <nav>
         <ol className="breadcrumb">
-            <li className="breadcrumb-item"><Link to="/"><i className="bi bi-house-door"></i></Link></li>            
-            <li className="breadcrumb-item active">Devices</li>
+            <li className="breadcrumb-item"><Link to="/"><i className="bi bi-house-door"></i></Link></li>
+            <li className="breadcrumb-item"><Link to="/companies">Companies</Link></li>
+            <li className="breadcrumb-item active">Company devices</li>
         </ol>
         </nav>
     </div>
@@ -231,13 +248,6 @@ const Device_list = (props)=>{
                                         onChange={handleChange} />
                                     </div>
                                     <div className="me-3">
-                                        <input type="text" className="form-control border-left-0" placeholder="Company" 
-                                        id="company" 
-                                        name="company" 
-                                        value={filterData.company}  
-                                        onChange={handleChange} />
-                                    </div>
-                                    <div className="me-3">
                                         <select className="form-select"
                                         id="status" 
                                         name="status" 
@@ -258,7 +268,7 @@ const Device_list = (props)=>{
                         <div className="col-md-4">
                             <div className="d-flex justify-content-end">    
                                 <div className="group ps-2 ps-md-4">                            
-                                    <Link className="btn btn-secondary radius-50 px-3" to={`/add-device`}>+ Add New</Link>                            
+                                    <Link className="btn btn-secondary radius-50 px-3" to={`/add-company-devices/${company}`}>+ Add New</Link>                            
                                     {/* &nbsp;&nbsp;
                                     <a className="btn btn-danger radius-50 px-3" onClick={()=>confirmDelete()}>
                                        <i className="bi bi-trash"></i>
@@ -280,18 +290,16 @@ const Device_list = (props)=>{
                                         
                                         return(
                                         <div key={i} className="col-lg-6 col-md-6 col-12 py-2">
-                                            
-                                            <div className={`card flex-row h-100 ${ (doc.status)==1 ? 'bg-success' : 'bg-danger'} `}>                                             
-                                              
-                                              <img className="device-img" src="/assets/img/device/2.png" alt="" />                                             
-                                              <div className="card-body text-white">                                                
+                                            <div className={`card flex-row h-100 ${ (doc.status)==1 ? 'bg-success' : 'bg-danger'} `}>                                           
+                                                <img className="device-img" src="/assets/img/device/2.png" alt="" />                                             
+                                                <div className="card-body text-white">                                                
                                                 <h5 className="card-title text-white">{doc.device_id}</h5>
                                                 <h5 className="card-text mb-1"><b>Name</b> : {doc.device_name}</h5>
                                                 <p className="card-text mb-1"><b>Unit</b> : {doc.unit}</p>
                                                 <p className="card-text mb-1"><b>Location</b> : {doc.device_location}</p>                               
                                                 <p className="card-text mb-1"><b>Note</b> : {doc.note}</p>          
 
-                                                <Link title="Edit" to={`/edit-device/${doc.id}`} >                                                
+                                                <Link title="Edit" to={`/edit-company-devices/${company}/${doc.id}`} >                                                
                                                 <i className="bi bi-pencil-square text-white"></i>
                                                 </Link>  
                                                 <div className="vr"></div> 
@@ -303,20 +311,20 @@ const Device_list = (props)=>{
                                                 <i className="bi bi-clipboard-data text-white"></i> Device Data
                                                 </Link>
 
-                                              </div>
+                                                </div>
                                             </div>  
-                                                                         
                                           </div>
                                         )
                                     })
                                     :
-                                    <div className="col-12">
+                                    <div className="col-sm-4 col-12">
                                     No Record Found.
                                     </div>                                                                  
-                                }  
-                                
-                                { total_page > 1 && 
-                                    <div className="col-12 py-4">                                     
+                                }
+
+                                { 
+                                    total_page > 1 &&     
+                                    <div className="col-md-12">                                 
                                     <div className="card-body table-responsive px-2">                                        
                                     <div className="text-end">
                                     <span className="p-3">{Parser(display_text)}</span>
@@ -334,10 +342,9 @@ const Device_list = (props)=>{
                                     }	
                                     </div>
                                     </div>
-                                    </div>   
                                     </div>
-                                }	
-
+                                    </div>     
+                                }				                        
                                 </>
                             }  
                             </div>
@@ -353,5 +360,5 @@ const Device_list = (props)=>{
   );
  
 }
-export default Device_list;
+export default Company_devices_list;
 

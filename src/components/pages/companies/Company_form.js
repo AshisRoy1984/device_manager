@@ -1,31 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import reactDOM from 'react-dom'; 
 import { Link, Navigate, useParams } from 'react-router-dom'; 
-
-import Modal from 'react-bootstrap/Modal';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import Api from '../../../config/Api';
 import validation from '../../../config/validation';
-
+import Meta from '../../common/Meta'; 
 const Company_form = (props)=>{ 
 
-  const { DeviceIntID } = useParams();  
+  const { id } = useParams();   
+
+  const metaData = {
+    meta_title : id ? 'Edit Company' : 'Add Company',
+    meta_description : '',
+    meta_keywords : '',
+  }   
 
   const __data = {  
-    DeviceID: '',  
-    DeviceName:'',
-    DeviceLocation:'',
-    Unit:'',
-    Status:'',
-    Note:'',
+    name: '',  
+    email:'',
+    phone:'',
+    address:'',
+    status:'',   
   }
 
   const __errors = {	
-    DeviceID: '',  
-    DeviceName:'',
-    DeviceLocation:'',
-    Unit:'',
-    Status:'',
-    Note:'',
+    name: '',  
+    email:'',
+    phone:'',
+    address:'',
+    status:'',    
   }
 
   const [data, set_data] = useState(__data)   
@@ -35,19 +38,26 @@ const Company_form = (props)=>{
   const [submitted, set_submitted] = useState(false);     
  
 	useEffect(() => {	
-    if(DeviceIntID){
-      fetchData(DeviceIntID)
+    if(id){
+      fetchData(id)
     }    
-	},[DeviceIntID]);  
+	},[]);  
 
-  const fetchData = async (DeviceIntID)=>{ 		
+  const fetchData = async (id)=>{ 		
 		try{				
-			const res = await Api.device_row({
-        id:DeviceIntID,       
+			const res = await Api.company_row({
+        id:id,       
 			});
+      
 			if( res && (res.status === 200) ){				
-				let result = res.data
-				set_data(result.data)				
+				let resData = res.data
+				set_data({
+          name: resData.name,  
+          email: resData.email,  
+          phone: resData.phone,  
+          address: resData.address,  
+          status: resData.status,            
+        })				
 			}			
 		}
 		catch (err) {
@@ -61,84 +71,87 @@ const Company_form = (props)=>{
     set_data({...data, [field_name]: field_value})
   }	
 
-  const validate_DeviceName = (value)=>{	
+  const validate_name = (value)=>{	
       let err = '';          
-      let DeviceName = value ?? data.DeviceName
-      if(!DeviceName){ 
-        err  = 'Device Name is required';  
+      let name = value ?? data.name
+      if(!name){ 
+        err  = 'Name is required';  
       } 
       set_errors({
         ...errors,
-        DeviceName:err
+        name:err
       });	  
       return err;	
   }
 
-  const validate_DeviceID = (value)=>{	
+  const validate_email = (value)=>{	
       let err = '';          
-      let DeviceID = value ?? data.DeviceID
-      if(!DeviceID){ 
-        err  = 'Device ID is required';  
+      let email = value ?? data.email
+      if(!email){ 
+        err = 'Email is required';  
       } 
+      else if(!validation.validateEmail(email)){       
+        err = 'Email is not valid!';
+      }		
       set_errors({
         ...errors,
-        DeviceID:err
+        email:err
       });	  
       return err;	
   }
 
-  const validate_DeviceLocation = (value)=>{	
-      let err = '';  
-      let DeviceLocation = value ?? data.DeviceLocation
-      if(!DeviceLocation){        
-        err  = 'Device Location is required';         
-      }	  
+  const validate_phone = (value)=>{	
+      let err = '';          
+      let phone = value ?? data.phone
+      if(!phone){ 
+        err  = 'Phone is required';  
+      } 
       set_errors({
         ...errors,
-        DeviceLocation:err
-      });	 
+        phone:err
+      });	  
       return err;	
   }
 
-  const validate_Unit = (value)=>{	
-      let err = '';  
-      let Unit = value ?? data.Unit
-      if(!Unit){        
-        err  = 'Unit is required';          
+  const validate_address = (value)=>{	
+      let err = '';          
+      let address = value ?? data.address
+      if(!address){ 
+        err  = 'Address is required';  
       } 
-       
       set_errors({
         ...errors,
-        Unit:err
-      });	 
+        address:err
+      });	  
       return err;	
   }
 
   const validateForm = ()=>{		
+
     let errors  = {};  
     let isValid  = true;  
 
-    let DeviceName = validate_DeviceName()
-    if( DeviceName !=='' ){
-      errors.DeviceName = DeviceName;
+    let name = validate_name()
+    if( name !=='' ){
+      errors.name = name;
       isValid = false;
     }
 
-    let DeviceID = validate_DeviceID()
-    if( DeviceID !=='' ){
-      errors.DeviceID = DeviceID;
+    let email = validate_email()
+    if( email !=='' ){
+      errors.email = email;
       isValid = false;
     }
 
-    let DeviceLocation = validate_DeviceLocation()
-    if( DeviceLocation !==''){
-      errors.DeviceLocation = DeviceLocation;
+    let phone = validate_phone()
+    if( phone !==''){
+      errors.phone = phone;
       isValid = false;
     }
 
-    let Unit = validate_Unit()
-    if( Unit !==''){
-      errors.Unit = Unit;
+    let address = validate_address()
+    if( address !==''){
+      errors.address = address;
       isValid = false;
     }
 
@@ -147,31 +160,26 @@ const Company_form = (props)=>{
   }
 
   const handleSubmit = async(e)=>{
-    e.preventDefault();   
-   
+    e.preventDefault();  
     if(validateForm()){	
-
-      set_disablebutton(true)
-      
+      set_disablebutton(true)      
       try{
 
-        if(DeviceIntID){
+        if(id){
 
-            const res = await Api.update_device({   
-              id:DeviceIntID,
-              UserID:localStorage.getItem(process.env.REACT_APP_PREFIX + 'user_id'), 
-              DeviceID:data.DeviceID,
-              DeviceName:data.DeviceName,
-              DeviceLocation:data.DeviceLocation,
-              Unit:data.Unit,
-              Status:data.Status,
-              Note:data.Note,              
+            const res = await Api.update_company({   
+              id:id,
+              name:data.name,
+              email:data.email,
+              phone:data.phone,
+              address:data.address,
+              status: (data.status=='') ? 0 : data.status,              
             });
             
             if( res && (res.status === 200) ){              
               set_submitted(true)
             } 
-            else {          
+            else{ 
               const { status, message, error } = res.data;                
               set_common_error(message)
               set_errors(error)
@@ -181,18 +189,16 @@ const Company_form = (props)=>{
         }
         else{
 
-            const res = await Api.create_device({ 
-              UserID:localStorage.getItem(process.env.REACT_APP_PREFIX + 'user_id'), 
-              DeviceID:data.DeviceID,
-              DeviceName:data.DeviceName,
-              DeviceLocation:data.DeviceLocation,
-              Unit:data.Unit,
-              Status:data.Status,
-              Note:data.Note,              
+            const res = await Api.create_company({ 
+              name:data.name,
+              email:data.email,
+              phone:data.phone,
+              address:data.address,
+              status: (data.status=='') ? 0 : data.status,              
             });
             
-            if( res && (res.status === 200) ){
-              set_submitted(true)
+            if( res && (res.status === 200 || res.status === 201) ){
+              set_submitted(true)  
             } 
             else {          
               const { status, message, error } = res.data;           
@@ -212,15 +218,20 @@ const Company_form = (props)=>{
   }	
 
   if( submitted ){
-    return <Navigate  to='/device' />			
+    return <Navigate  to='/companies' />			
   }
 
   return (   
 	  <> 
+    <Meta metaData={metaData} />
+    <HelmetProvider>
+    <Helmet>	
+    </Helmet>				
+    </HelmetProvider> 
     <div className="pagetitle">
         <h1>
         {
-          DeviceIntID ? 'Edit Company' : 'Add Company'
+          id ? 'Edit Company' : 'Add Company'
         }      
         </h1>
         <nav>
@@ -229,7 +240,7 @@ const Company_form = (props)=>{
             <li className="breadcrumb-item"><Link to="/companies">Companies</Link></li>
             <li className="breadcrumb-item active">
             {
-              DeviceIntID ? 'Edit Company' : 'Add Company'
+              id ? 'Edit Company' : 'Add Company'
             }      
             </li>
         </ol>
@@ -252,99 +263,84 @@ const Company_form = (props)=>{
                     <form method="post" onSubmit={handleSubmit}>   
                         
                         <div className="mb-3">
-                          <label className="form-label">Device Name<span className="required">*</span></label>
+                          <label className="form-label">Company Name<span className="required">*</span></label>
                           <input type="text" className="form-control" 
-                          id="DeviceName"
-                          name="DeviceName" 
-                          value={data.DeviceName} 
+                          id="name"
+                          name="name" 
+                          value={data.name} 
                           onChange={(e)=>{
                             handleChange(e)
-                            validate_DeviceName(e.target.value)
+                            validate_name(e.target.value)
                           }}    
                           />
-                          {errors.DeviceName && 
-                            <div className="error-msg">{errors.DeviceName}</div>    
+                          {errors.name && 
+                            <div className="error-msg">{errors.name}</div>    
                           }  	
                         </div>
 
                         <div className="mb-3">
-                          <label className="form-label">Device ID<span className="required">*</span></label>
+                          <label className="form-label">Email<span className="required">*</span></label>
                           <input type="text" className="form-control" 
-                          id="DeviceID"
-                          name="DeviceID" 
-                          value={data.DeviceID} 
+                          id="email"
+                          name="email" 
+                          value={data.email} 
                           onChange={(e)=>{
                             handleChange(e)
-                            validate_DeviceID(e.target.value)
+                            validate_email(e.target.value)
                           }}    
                           />
-                          {errors.DeviceID && 
-                            <div className="error-msg">{errors.DeviceID}</div>    
+                          {errors.email && 
+                            <div className="error-msg">{errors.email}</div>    
                           }  	
                         </div>
                        
                         <div className="mb-3">
-                        <label className="form-label">Device Location<span className="required">*</span></label>
+                        <label className="form-label">Phone<span className="required">*</span></label>
                         <input type="text" className="form-control" placeholder=''
-                        id="DeviceLocation"
-                        name="DeviceLocation" 
-                        value={data.DeviceLocation} 
+                        id="phone"
+                        name="phone" 
+                        value={data.phone} 
                         onChange={(e)=>{
                           handleChange(e)
-                          validate_DeviceLocation(e.target.value)
+                          validate_phone(e.target.value)
                         }}    
                         />
-                        {errors.DeviceLocation && 
-                          <div className="error-msg">{errors.DeviceLocation}</div>    
+                        {errors.phone && 
+                          <div className="error-msg">{errors.phone}</div>    
                         } 
                         </div>  
                        
                         <div className="mb-3">
-                          <label className="form-label">Unit<span className="required">*</span></label>
-                          <input type="text" className="form-control" placeholder=''
-                          id="Unit"
-                          name="Unit" 
-                          value={data.Unit} 
-                          onChange={(e)=>{
-                            handleChange(e)
-                            validate_Unit(e.target.value)
-                          }}    
-                          />
-                          {errors.Unit && 
-                            <div className="error-msg">{errors.Unit}</div>    
-                          } 
-                        </div>   
-                       
-                        <div className="mb-3">
-                          <label className="form-label">Note</label>
+                          <label className="form-label">Address<span className="required">*</span></label>
                           <textarea className="form-control" 
                           rows={5}
-                          id="Note"
-                          name="Note" 
-                          value={data.Note} 
+                          id="address"
+                          name="address" 
+                          value={data.address} 
                           onChange={(e)=>{
-                            handleChange(e)              
+                            handleChange(e)  
+                            validate_address(e.target.value)           
                           }}    
                           />
-                          {errors.Note && 
-                            <div className="error-msg">{errors.Note}</div>    
+                          {errors.address && 
+                            <div className="error-msg">{errors.address}</div>    
                           }  	
                         </div>
                        
                         <div className="mb-3">
                           <label className="form-label">Status</label>
                           <select className="form-select"
-                          id="Status" 
-                          name="Status" 
-                          value={data.Status}  
+                          id="status" 
+                          name="status" 
+                          value={data.status}  
                           onChange={handleChange}
                           >
-                          <option value="">-</option>
-                          <option value="0">In-Active</option>
-                          <option value="1">Active</option>        
+                          <option value="">-</option>                          
+                          <option value="1">Active</option>  
+                          <option value="0">In-Active</option>      
                           </select>
-                          {errors.Status && 
-                            <div className="error-msg">{errors.Status}</div>    
+                          {errors.status && 
+                            <div className="error-msg">{errors.status}</div>    
                           }  	
                         </div>                       
                       

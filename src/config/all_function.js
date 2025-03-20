@@ -12,7 +12,7 @@ const all_function = {
     return letter;
   },
   limit : ()=> {    
-    return 10;
+    return 20;
   },
   localStorage_setWithExpiry : (key, value, ttl)=> {
     const now = new Date()    
@@ -63,6 +63,9 @@ const all_function = {
   },
   getFormattedDate: (myDateTime)=> {    
     return dayjs(myDateTime).format('MM-DD-YYYY, hh:mm A');
+  },
+  getHourMinute: (myDateTime)=> {    
+    return dayjs(myDateTime).format('hh:mm');
   },
   currency: (amount)=>{
     return '$'+amount;

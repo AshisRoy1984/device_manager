@@ -6,18 +6,17 @@ import Api from '../../../config/Api';
 import validation from '../../../config/validation';
 import Meta from '../../common/Meta'; 
 
-const Device_form = (props)=>{ 
+const Company_devices_form = (props)=>{ 
 
-  const { id } = useParams();  
+  const { company, id } = useParams();  
 
   const metaData = {
-    meta_title : id ? 'Edit Device' : 'Add Device',
+    meta_title : id ? 'Edit Company Device' : 'Add Company Device',
     meta_description : '',
     meta_keywords : '',
   }   
 
   const __data = {  
-    company: '',  
     device_id: '',  
     device_name:'',
     device_location:'',
@@ -27,7 +26,6 @@ const Device_form = (props)=>{
   }
 
   const __errors = {	
-    company: '',  
     device_id: '',  
     device_name:'',
     device_location:'',
@@ -37,7 +35,7 @@ const Device_form = (props)=>{
   }
 
   const [data, set_data] = useState(__data)   
-  const [companies, set_companies] = useState([])  
+  const [companyRow, set_companyRow] = useState("");  
   const [disablebutton, set_disablebutton] = useState(false);   
   const [common_error, set_common_error] = useState("")  
   const [errors,set_errors] = useState(__errors) 
@@ -48,10 +46,9 @@ const Device_form = (props)=>{
       fetchData(id)
     }    
 	},[]);  
-
-  useEffect(() => {	
-      fetchCompany()   
-  },[]);
+  useEffect(() => {		
+      fetchCompanyRow(company)        
+  },[]); 
 
   const fetchData = async (id)=>{ 		
 		try{				
@@ -62,7 +59,6 @@ const Device_form = (props)=>{
 			if( res && (res.status === 200) ){				
 				let resData = res.data
 				set_data({
-          company: resData.company,  
           device_id: resData.device_id,  
           device_name: resData.device_name,  
           device_location: resData.device_location,  
@@ -76,38 +72,22 @@ const Device_form = (props)=>{
 			console.log('err:', err)
 		}        
   }	
-
-  const fetchCompany = async (id)=>{ 		
-    try{				
-      const res = await Api.companies({});      
-      if( res && (res.status === 200) ){				
-        let resData = res.data
-        set_companies(resData.results)				
-      }			
-    }
-    catch (err) {
-      console.log('err:', err)
-    }        
-  }	
+  const fetchCompanyRow = async (company)=>{       
+      const res = await Api.company_row({
+          id:company, 
+      })
+      if( res && (res.status === 200) ){
+          const resData = res.data; 
+          set_companyRow(resData)   
+      }        
+  }
 
   const handleChange = (e)=>{	
     const field_name  = e.target.name;
     const field_value = e.target.value;
     set_data({...data, [field_name]: field_value})
   }	
-  
-  const validate_company = (value)=>{	
-      let err = '';          
-      let company = value ?? data.company
-      if(!company){ 
-        err  = 'Company is required';  
-      } 
-      set_errors({
-        ...errors,
-        company:err
-      });	  
-      return err;	
-  }
+
   const validate_device_id = (value)=>{	
       let err = '';          
       let device_id = value ?? data.device_id
@@ -165,12 +145,6 @@ const Device_form = (props)=>{
     let errors  = {};  
     let isValid  = true;  
 
-    let company = validate_company()
-    if( company !=='' ){
-      errors.company = company;
-      isValid = false;
-    }
-
     let device_id = validate_device_id()
     if( device_id !=='' ){
       errors.device_id = device_id;
@@ -209,7 +183,7 @@ const Device_form = (props)=>{
 
             const res = await Api.update_company_device({   
               id:id,
-              company:data.company,
+              company:company,
               device_id:data.device_id,
               device_name:data.device_name,
               device_location:data.device_location,
@@ -232,7 +206,7 @@ const Device_form = (props)=>{
         else{
 
             const res = await Api.create_company_device({ 
-              company:data.company,
+              company:company,
               device_id:data.device_id,
               device_name:data.device_name,
               device_location:data.device_location,
@@ -262,7 +236,7 @@ const Device_form = (props)=>{
   }	
 
   if( submitted ){
-    return <Navigate  to={`/devices`} />			
+    return <Navigate  to={`/company-devices/${company}`} />			
   }
 
   return (   
@@ -273,18 +247,24 @@ const Device_form = (props)=>{
     </Helmet>				
     </HelmetProvider> 
     <div className="pagetitle">
-        <h1>
+        <h1>        
         {
-          id ? 'Edit Device' : 'Add Device'
-        }      
+            companyRow &&
+            <>
+            {
+              id ? `Edit Device for : ${companyRow.name}` : `Add Device for : ${companyRow.name}`
+            }  
+            </>                
+        }        
         </h1>
         <nav>
         <ol className="breadcrumb">
             <li className="breadcrumb-item"><Link to="/"><i className="bi bi-house-door"></i></Link></li>
-            <li className="breadcrumb-item"><Link to="/devices">Devices</Link></li>
+            <li className="breadcrumb-item"><Link to="/companies">Companies</Link></li>
+            <li className="breadcrumb-item"><Link to={`/company-devices/${company}`}>Company devices</Link></li>            
             <li className="breadcrumb-item active">
             {
-              id ? 'Edit Device' : 'Add Device'
+              id ? 'Edit Company Device' : 'Add Company Device'
             }      
             </li>
         </ol>
@@ -306,29 +286,6 @@ const Device_form = (props)=>{
                     }   
                     <form method="post" onSubmit={handleSubmit}>   
                         
-                          <div className="mb-3">
-                            <label className="form-label">Company<span className="required">*</span></label>
-                            <select className="form-select"
-                            id="company" 
-                            name="company" 
-                            value={data.company}  
-                            onChange={(e)=>{
-                              handleChange(e)
-                              validate_company(e.target.value)
-                            }}   
-                            >
-                            <option value="">-</option>         
-                            {
-                              companies.map((val,i)=>{
-                                return(<option key={i} value={val.id}>{val.name}</option>)
-                              })
-                            }          
-                            </select>
-                            {errors.company && 
-                              <div className="error-msg">{errors.company}</div>    
-                            }  	
-                        </div>         
-
                         <div className="mb-3">
                           <label className="form-label">Device ID<span className="required">*</span></label>
                           <input type="text" className="form-control" 
@@ -441,5 +398,5 @@ const Device_form = (props)=>{
     );
  
 }
-export default Device_form;
+export default Company_devices_form;
 

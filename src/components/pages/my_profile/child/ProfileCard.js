@@ -11,7 +11,7 @@ const ProfileCard = (props)=>{
      	
 	useEffect(() => {
         dispatch(fetchUser())        
-	},[]);  
+	},[]); 
 
     return(
         <>
@@ -24,9 +24,9 @@ const ProfileCard = (props)=>{
                 <img src="/assets/img/default-profile.png" className="rounded-circle" alt="" />
             )}
 
-            <h2>{user.fname ?? ''} {user.lname ?? ''}</h2>
-            <h3>{user.user_type}</h3>  
-            <p>Member since : {dayjs(user.create_date ?? '').format('D MMM, YYYY h:mm A')}</p>  
+            <h2>{user.username ?? ''}</h2>  
+            <p>{user.role ?? ''}</p>                      
+            {/* <p>Member since : {dayjs(user.create_date ?? '').format('D MMM, YYYY h:mm A')}</p>   */}
                     
             {user.social_media &&
                 <div className="social-links mt-2">

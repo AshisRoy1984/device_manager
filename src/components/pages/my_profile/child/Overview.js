@@ -15,24 +15,22 @@ let Overview = (props)=>{
 
     return(
         <>
-            <h5 className="card-title">About</h5>
-            <p className="small fst-italic">{user.about ?? ''}</p>
-
+           
             <h5 className="card-title">Profile Details</h5>
 
             <div className="row">
-            <div className="col-lg-3 col-md-4 label ">Full Name</div>
-            <div className="col-lg-9 col-md-8">{user.fname ?? ''} {user.lname ?? ''}</div>
-            </div>
+            <div className="col-lg-3 col-md-4 label ">Company</div>
+            <div className="col-lg-9 col-md-8">{user.company ?? ''}</div>
+            </div>     
 
             <div className="row">
-            <div className="col-lg-3 col-md-4 label">Job</div>
-            <div className="col-lg-9 col-md-8">{user.user_type ?? ''}</div>
-            </div>					
+            <div className="col-lg-3 col-md-4 label ">Username</div>
+            <div className="col-lg-9 col-md-8">{user.username ?? ''}</div>
+            </div>            
 
             <div className="row">
-            <div className="col-lg-3 col-md-4 label">Address</div>
-            <div className="col-lg-9 col-md-8">{user.address ?? ''}</div>
+            <div className="col-lg-3 col-md-4 label">Email</div>
+            <div className="col-lg-9 col-md-8">{user.email ?? ''}</div>
             </div>
 
             <div className="row">
@@ -41,8 +39,8 @@ let Overview = (props)=>{
             </div>
 
             <div className="row">
-            <div className="col-lg-3 col-md-4 label">Email</div>
-            <div className="col-lg-9 col-md-8">{user.email ?? ''}</div>
+            <div className="col-lg-3 col-md-4 label">Role</div>
+            <div className="col-lg-9 col-md-8">{user.role ?? ''}</div>
             </div>
             
         </>

@@ -16,31 +16,35 @@ const Profile_top = ()=>{
 
 	useEffect(() => {
         dispatch(fetchUser())        
-	},[]); 
-
-	console.log(user)
+	},[]); 	
 
 	const call_logout = async ()=>{
 		try {
-			const resData = await Api.logout({				
-				user_id:user.id, 				
-			});
+			// const resData = await Api.logout({				
+			// 	user_id:user.id, 				
+			// });
 			
-			if( resData && (resData.status === 200) ){	
-				localStorage.removeItem(process.env.REACT_APP_PREFIX + 'access_token');
-                localStorage.removeItem(process.env.REACT_APP_PREFIX + 'refresh_token');
-                localStorage.removeItem(process.env.REACT_APP_PREFIX + 'user_id');	
-				set_loggedIn(false)
-			} 
+			// if( resData && (resData.status === 200) ){	
+			// 	localStorage.removeItem(process.env.REACT_APP_PREFIX + 'access_token');
+            //     localStorage.removeItem(process.env.REACT_APP_PREFIX + 'refresh_token');
+            //     localStorage.removeItem(process.env.REACT_APP_PREFIX + 'user_id');	
+			// 	set_loggedIn(false)
+			// } 
+
+			localStorage.removeItem(process.env.REACT_APP_PREFIX + 'access_token');
+            localStorage.removeItem(process.env.REACT_APP_PREFIX + 'refresh_token');
+            localStorage.removeItem(process.env.REACT_APP_PREFIX + 'user_id');	
+			set_loggedIn(false)
 			
 		} 
-		catch (err) {			
+		catch (err) {
+
 		}
 		
 	}
 
 	if(!loggedIn){			
-		  return <Navigate  to='/login' />			
+		return <Navigate  to='/login' />			
 	}	
 	
     return(         

@@ -21,7 +21,7 @@ const Sidebar = (props)=>{
 
 	const users_menu   	        = ['users','add-user','edit-user'];
 	const companies_menu   	    = ['companies','add-company','edit-company'];	
-	const device_menu   	    = ['device','add-device','edit-device'];
+	const device_menu   	    = ['devices','add-device','edit-device'];
 	
 	return (
 		<>		    	   
@@ -74,12 +74,11 @@ const Sidebar = (props)=>{
 			</li>			
 
 			<li className="nav-item">
-			<Link to="/device" className={`nav-link ${device_menu.includes(current_path) ? '' : 'collapsed'}`}>
+			<Link to="/devices" className={`nav-link ${device_menu.includes(current_path) ? '' : 'collapsed'}`}>
 			<i className="bi bi-hdd-network-fill"></i>
-			<span>Device</span>
+			<span>Devices</span>
 			</Link>
-			</li>
-			
+			</li>		
 			
 
 		</ul>

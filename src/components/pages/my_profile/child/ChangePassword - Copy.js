@@ -10,10 +10,12 @@ import { fetchUser } from '../../../../redux/slice/userReducer'
 let ChangePassword = (props)=>{
     
     const __data = {
+        current_password:"",  
         new_password:"",
         renew_password:"", 		
 	}
 	const __errors = {
+        current_password:"",  
         new_password:"",
         renew_password:"", 		
 	}
@@ -39,11 +41,34 @@ let ChangePassword = (props)=>{
 		set_data({...data, [field_name]: field_value})
 	}
 
+    const check_current_password = ()=>{	
+        const promise = new Promise( async (resolve, reject)=>{ 
+            
+            const resData = await Api.check_current_password({                        
+                id:user.id, 
+                password:data.current_password
+            });
+
+            if( resData && (resData.status === 200) ){
+                resolve('success')
+            }
+            else{
+                const errorMessage = 'Wrong Current Password';
+                set_errors({['current_password']: errorMessage})               
+                reject(errorMessage)
+            }            
+        })
+        return promise        
+	}
 
     const validateForm = ()=>{		
 		let errors                = {};  
 		let isValid               = true;  
-		
+
+		if(!data.current_password){
+			isValid 		         = false;
+			errors.current_password  = 'Current Password is required';
+		}   
 		if(!data.new_password){
 			isValid 		       = false;
 			errors.new_password    = 'New Password is required';
@@ -64,31 +89,43 @@ let ChangePassword = (props)=>{
 		e.preventDefault(); 
 
         if( validateForm() ){
-            set_disablebutton(true)  
-            const resData = await Api.update_password({                        
-                id:user.id, 
-                password:data.new_password
-            });
+            const promise = check_current_password()  
+            promise.then( async(response)=>{  
+                if(response){
 
-            if( resData && (resData.status === 200) ){
-                MySwal.fire({
-                    icon: 'success', 
-                    text:'Password updated successfully', 
-                    confirmButtonColor: '#3085d6'
-                }) 
-                set_disablebutton(false)  
-                set_data(__data)
-            }
-            else{
-                set_disablebutton(false)  
-            }               
+                    set_disablebutton(true)  
+                    const resData = await Api.update_password({                        
+                        id:user.id, 
+                        password:data.new_password
+                    });
+        
+                    if( resData && (resData.status === 200) ){
+                        MySwal.fire({icon: 'success', text:'Password updated successfully', confirmButtonColor: '#3085d6'}) 
+                    }
+                    else{
+                       //===
+                    }                       
+                }
+                
+            })             
         }
 
     }
 
     return(
         <>        
-        <form name="cngPassdForm" id="cngPassdForm" method="post" encType="multipart/form-data" onSubmit={handleSubmit}>        
+        <form name="cngPassdForm" id="cngPassdForm" method="post" encType="multipart/form-data" onSubmit={handleSubmit}>
+        <div className="row mb-3">
+        <label htmlFor="current_password" className="col-md-4 col-lg-3 col-form-label">Current Password</label>
+        <div className="col-md-8 col-lg-9">
+        <input name="current_password" type="password" className={`form-control ${errors.current_password ? 'error': ''} `} id="current_password" autoComplete='current-password' 
+        value={data.current_password}
+        onChange={handleChange} />
+        {errors.current_password && 
+        <div className="error-msg">{errors.current_password}</div>    
+        }   
+        </div>
+        </div>
 
         <div className="row mb-3">
         <label htmlFor="new_password" className="col-md-4 col-lg-3 col-form-label">New Password</label>

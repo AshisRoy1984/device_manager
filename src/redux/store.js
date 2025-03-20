@@ -1,23 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./slice/userReducer";
-import deviceReducer from "./slice/deviceReducer";
 import {
   nameModalReducer,
-  emailModalReducer,
-  phoneModalReducer,
-  aboutMeModalReducer,
-  termsModalReducer,  
+  emailModalReducer, 
 } from "../reducers/modalReducer";
 
 export const store = configureStore({
   reducer: {       
-    'name_modal':nameModalReducer,
-    'email_modal':emailModalReducer,
-    'phone_modal':phoneModalReducer,
-    'about_me_modal':aboutMeModalReducer,
-    'terms_modal':termsModalReducer,    
-    'user':userReducer,  
-    'devices':deviceReducer,      
+    //'name_modal':nameModalReducer,
+    //'email_modal':emailModalReducer,    
+    'user':userReducer,      
   },
 });
 //console.log(store.getState())

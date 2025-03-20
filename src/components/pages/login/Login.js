@@ -266,9 +266,9 @@ const Login = ()=>{
                           onChange={handleRememberMe} />
                           <label className="form-check-label">Remember me</label>
                           </div>
-                          <div>
+                          {/* <div>
                           <p className="small mb-0"><Link to="/forgot-password">I forgot my password</Link></p>
-                          </div>
+                          </div> */}
                           </div>
                         </div>
                         <div className="col-12">
