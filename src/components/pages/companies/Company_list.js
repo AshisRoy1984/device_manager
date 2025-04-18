@@ -206,7 +206,7 @@ const Company_list = (props)=>{
                 <div className="card-body">
 
                     <div className="row py-2 pt-md-4 pt-2">
-                        <div className="col-md-8">
+                        <div className="col-lg-10 col-md-10 COL-12">
 
                             <form id="frmFilter" name="frmFilter" method="get" onSubmit={handleFilter}>	
                             <div className="d-flex">
@@ -215,6 +215,20 @@ const Company_list = (props)=>{
                                         id="name" 
                                         name="name" 
                                         value={filterData.name}  
+                                        onChange={handleChange} />
+                                    </div>
+                                    <div className="me-3">
+                                        <input type="text" className="form-control border-left-0" placeholder="Email" 
+                                        id="email" 
+                                        name="email" 
+                                        value={filterData.email}  
+                                        onChange={handleChange} />
+                                    </div>
+                                    <div className="me-3">
+                                        <input type="text" className="form-control border-left-0" placeholder="Phone" 
+                                        id="phone" 
+                                        name="phone" 
+                                        value={filterData.phone}  
                                         onChange={handleChange} />
                                     </div>
                                     <div className="me-3">
@@ -235,7 +249,7 @@ const Company_list = (props)=>{
                             </div>
                             </form>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-lg-2 col-md-2 COL-12">
                             <div className="d-flex justify-content-end">    
                                 <div className="group ps-2 ps-md-4">                            
                                     <Link className="btn btn-secondary radius-50 px-3" to="/add-company">+ Add New</Link>                            
@@ -255,7 +269,7 @@ const Company_list = (props)=>{
                                     <thead>
                                         <tr className="table-active">
                                             <th scope="col" className="text-uppercase">#</th> 
-                                            <th scope="col" className="text-uppercase">Name</th>                                            
+                                            <th scope="col" className="text-uppercase">Company Name</th>                                            
                                             <th scope="col" className="text-uppercase">Email</th>       
                                             <th scope="col" className="text-uppercase">Phone</th>     
                                             <th scope="col" className="text-uppercase">Address</th> 
@@ -297,7 +311,7 @@ const Company_list = (props)=>{
                                                     <td className="text-center">
 
                                                         <Link title="View Devices" to={`/company-devices/${doc.id}`} >
-                                                        <i className="bi bi-clipboard-data text-primary"></i> Devices
+                                                        Devices
                                                         </Link> 
 
                                                         <div className="vr"></div> 

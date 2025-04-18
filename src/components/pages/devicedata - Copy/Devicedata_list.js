@@ -38,8 +38,7 @@ const Devicedata_list = (props)=>{
     const [next, set_next] = useState("");   
     const [previous, set_previous] = useState("");  
     const [loader, set_loader] = useState(true);   
-    const [page, set_page] = useState(__filterData.page);   
-    let [selected_item, set_selected_item] = useState([]);    
+    const [page, set_page] = useState(__filterData.page);    
 
     const MySwal = withReactContent(Swal)
 
@@ -122,36 +121,6 @@ const Devicedata_list = (props)=>{
       set_page(1)
       updateBrowserUrl(1)			
       fetchData(1)	
-    }
-
-    const handlePaginate = (page)=>{	
-      set_page(page)
-      updateBrowserUrl(page)	
-      fetchData(page); 		
-    }
-
-    const handleCheckall = (e)=>{
-      let inputs = document.querySelectorAll('.selected-chk');  	
-      if(e.target.checked){			
-        for (var i = 0; i < inputs.length; i++) {   
-          inputs[i].checked = true;   
-        }   
-      } 
-      else{
-        for (var j = 0; j < inputs.length; j++) {   
-          inputs[j].checked = false;   
-        }   
-      }
-      updateSelectedItem()	
-    }   
-
-    const updateSelectedItem = ()=>{
-        let selected_inputs = [] 
-        let inputs = document.querySelectorAll('.selected-chk:checked');
-        for(var i = 0; i < inputs.length; i++) {             
-            selected_inputs.push(inputs[i].value)
-        } 
-        set_selected_item(selected_inputs)  
     }
 
     const confirmDelete = async (id)=>{	

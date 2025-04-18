@@ -12,7 +12,7 @@ const all_function = {
     return letter;
   },
   limit : ()=> {    
-    return 20;
+    return 100;
   },
   localStorage_setWithExpiry : (key, value, ttl)=> {
     const now = new Date()    
@@ -67,6 +67,9 @@ const all_function = {
   getHourMinute: (myDateTime)=> {    
     return dayjs(myDateTime).format('hh:mm');
   },
+  getDateTime: (myDateTime)=> {    
+    return dayjs(myDateTime).format('YYYY-MM-DD hh:mm:ss');
+  },
   currency: (amount)=>{
     return '$'+amount;
   },
@@ -80,6 +83,18 @@ const all_function = {
       localStorage.removeItem('electron_user_id');         
     }     
   },
+  device_types : ()=> { 
+    return [
+      'CamSense',
+      'TempSense',
+      'WeightSense',
+      'SmellSense',
+      'LocationSense'
+    ]
+  },
+
+
+  
 
 }
 export default all_function;

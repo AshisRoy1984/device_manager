@@ -5,39 +5,39 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import Api from '../../../config/Api';
 import validation from '../../../config/validation';
 import Meta from '../../common/Meta'; 
+import all_function from '../../../config/all_function';
 
+const Camsense_devicedata_form = (props)=>{ 
 
-const Company_form = (props)=>{ 
-
-  const { id } = useParams();   
+  const { device, id } = useParams();  
 
   const metaData = {
-    meta_title : id ? 'Edit Company' : 'Add Company',
+    meta_title : id ? 'Edit Device data' : 'Add Device data',
     meta_description : '',
     meta_keywords : '',
   }   
 
-  const __data = {  
-    name: '',  
-    email:'',
-    phone:'',
-    address:'',
-    status:'',   
+  const __data = { 
+    count:'',
+    timestamp:'',
+    ip_address:'',
+    status:'',    
   }
 
   const __errors = {	
-    name: '',  
-    email:'',
-    phone:'',
-    address:'',
+    count:'',
+    timestamp:'',
+    ip_address:'',
     status:'',    
   }
 
   const [data, set_data] = useState(__data)   
+  const [deviceRow, set_deviceRow] = useState("");  
   const [disablebutton, set_disablebutton] = useState(false);   
   const [common_error, set_common_error] = useState("")  
   const [errors,set_errors] = useState(__errors) 
-  const [submitted, set_submitted] = useState(false);     
+  const [submitted, set_submitted] = useState(false);   
+  const statusArr = ['STUCK','MOTION','DEFAULT']  
  
 	useEffect(() => {	
     if(id){
@@ -45,20 +45,23 @@ const Company_form = (props)=>{
     }    
 	},[]);  
 
+  useEffect(() => {		
+    fetchDevice(device)        
+  },[]);
+
   const fetchData = async (id)=>{ 		
 		try{				
-			const res = await Api.company_row({
+			const res = await Api.camsense_device_sensor_data_row({
         id:id,       
 			});
       
 			if( res && (res.status === 200) ){				
 				let resData = res.data
 				set_data({
-          name: resData.name,  
-          email: resData.email,  
-          phone: resData.phone,  
-          address: resData.address,  
-          status: resData.status,            
+          count:resData.count,
+          timestamp:resData.timestamp,
+          ip_address:resData.ip_address,
+          status:resData.status,    
         })				
 			}			
 		}
@@ -66,6 +69,15 @@ const Company_form = (props)=>{
 			console.log('err:', err)
 		}        
   }	
+  const fetchDevice = async (device)=>{        
+      const res = await Api.company_device_row({
+          id:device,             
+      })       
+      if( res && (res.status === 200) ){
+          const resData = res.data; 
+          set_deviceRow(resData)  
+      }       			
+  }
 
   const handleChange = (e)=>{	
     const field_name  = e.target.name;
@@ -73,57 +85,54 @@ const Company_form = (props)=>{
     set_data({...data, [field_name]: field_value})
   }	
 
-  const validate_name = (value)=>{	
+  const validate_count = (value)=>{	
       let err = '';          
-      let name = value ?? data.name
-      if(!name){ 
-        err  = 'Name is required';  
+      let count = value ?? data.count
+      if(!count){ 
+        err  = 'Count is required';  
       } 
       set_errors({
         ...errors,
-        name:err
+        count:err
       });	  
       return err;	
   }
 
-  const validate_email = (value)=>{	
+  const validate_timestamp = (value)=>{	
       let err = '';          
-      let email = value ?? data.email
-      if(!email){ 
-        err = 'Email is required';  
+      let timestamp = value ?? data.timestamp
+      if(!timestamp){ 
+        err  = 'Timestamp is required';  
       } 
-      else if(!validation.validateEmail(email)){       
-        err = 'Email is not valid!';
-      }		
       set_errors({
         ...errors,
-        email:err
+        timestamp:err
       });	  
       return err;	
   }
 
-  const validate_phone = (value)=>{	
+  const validate_ip_address = (value)=>{	
       let err = '';          
-      let phone = value ?? data.phone
-      if(!phone){ 
-        err  = 'Phone is required';  
+      let ip_address = value ?? data.ip_address
+      if(!ip_address){ 
+        err  = 'IP Address is required';  
       } 
       set_errors({
         ...errors,
-        phone:err
+        ip_address:err
       });	  
       return err;	
   }
 
-  const validate_address = (value)=>{	
+  const validate_status = (value)=>{	
       let err = '';          
-      let address = value ?? data.address
-      if(!address){ 
-        err  = 'Address is required';  
+      let status = value ?? data.status
+      if(!status){ 
+        err  = 'Status is required';  
       } 
       set_errors({
         ...errors,
-        address:err
+        status:err
       });	  
       return err;	
   }
@@ -133,27 +142,27 @@ const Company_form = (props)=>{
     let errors  = {};  
     let isValid  = true;  
 
-    let name = validate_name()
-    if( name !=='' ){
-      errors.name = name;
+    let count = validate_count()
+    if( count !=='' ){
+      errors.count = count;
       isValid = false;
     }
 
-    let email = validate_email()
-    if( email !=='' ){
-      errors.email = email;
+    let timestamp = validate_timestamp()
+    if( timestamp !=='' ){
+      errors.timestamp = timestamp;
       isValid = false;
     }
 
-    let phone = validate_phone()
-    if( phone !==''){
-      errors.phone = phone;
+    let ip_address = validate_ip_address()
+    if( ip_address !=='' ){
+      errors.ip_address = ip_address;
       isValid = false;
     }
 
-    let address = validate_address()
-    if( address !==''){
-      errors.address = address;
+    let status = validate_status()
+    if( status !=='' ){
+      errors.status = status;
       isValid = false;
     }
 
@@ -164,22 +173,21 @@ const Company_form = (props)=>{
   const handleSubmit = async(e)=>{
     e.preventDefault();  
     if(validateForm()){	
-      set_disablebutton(true)    
-
+      set_disablebutton(true)      
       try{
 
         if(id){
 
-            const res = await Api.update_company({   
+            const res = await Api.update_camsense_device_sensor_data({   
               id:id,
-              name:data.name,
-              email:data.email,
-              phone:data.phone,
-              address:data.address,
-              status: (data.status=='') ? 0 : data.status,              
-            });            
+              device:deviceRow.device_id,
+              count:data.count,
+              timestamp:data.timestamp,
+              ip_address:data.ip_address,
+              status:data.status,    
+            });
             
-            if( res && (res.status === 200 || res.status === 201) ){              
+            if( res && (res.status === 200) ){              
               set_submitted(true)
             } 
             else{ 
@@ -192,13 +200,13 @@ const Company_form = (props)=>{
         }
         else{
 
-            const res = await Api.create_company({ 
-              name:data.name,
-              email:data.email,
-              phone:data.phone,
-              address:data.address,
-              status: (data.status=='') ? 0 : data.status,              
-            });
+            const res = await Api.create_camsense_device_sensor_data({ 
+              device:deviceRow.device_id,
+              count:data.count,
+              timestamp:data.timestamp,
+              ip_address:data.ip_address,
+              status:data.status,          
+            });           
             
             if( res && (res.status === 200 || res.status === 201) ){
               set_submitted(true)  
@@ -221,7 +229,7 @@ const Company_form = (props)=>{
   }	
 
   if( submitted ){
-    return <Navigate  to='/companies' />			
+    return <Navigate  to={`/camsense-device-data/${device}`} />			
   }
 
   return (   
@@ -234,16 +242,22 @@ const Company_form = (props)=>{
     <div className="pagetitle">
         <h1>
         {
-          id ? 'Edit Company' : 'Add Company'
-        }      
+            deviceRow &&
+            <>
+            {
+              id ? `Edit Device data for : ${deviceRow.device_id}` : `Add Device data for : ${deviceRow.device_id}`
+            }  
+            </>                
+        }
         </h1>
         <nav>
         <ol className="breadcrumb">
             <li className="breadcrumb-item"><Link to="/"><i className="bi bi-house-door"></i></Link></li>
-            <li className="breadcrumb-item"><Link to="/companies">Companies</Link></li>
+            <li className="breadcrumb-item"><Link to="/devices">Devices</Link></li>
+            <li className="breadcrumb-item"><Link to={`/camsense-device-data/${device}`}>Device data</Link></li>            
             <li className="breadcrumb-item active">
             {
-              id ? 'Edit Company' : 'Add Company'
+              id ? 'Edit Device data' : 'Add Device data'
             }      
             </li>
         </ol>
@@ -266,86 +280,78 @@ const Company_form = (props)=>{
                     <form method="post" onSubmit={handleSubmit}>   
                         
                         <div className="mb-3">
-                          <label className="form-label">Company Name<span className="required">*</span></label>
+                          <label className="form-label">Count<span className="required">*</span></label>
                           <input type="text" className="form-control" 
-                          id="name"
-                          name="name" 
-                          value={data.name} 
+                          id="count"
+                          name="count" 
+                          value={data.count} 
                           onChange={(e)=>{
                             handleChange(e)
-                            validate_name(e.target.value)
+                            validate_count(e.target.value)
                           }}    
                           />
-                          {errors.name && 
-                            <div className="error-msg">{errors.name}</div>    
+                          {errors.count && 
+                            <div className="error-msg">{errors.count}</div>    
                           }  	
-                        </div>
+                        </div>    
 
                         <div className="mb-3">
-                          <label className="form-label">Email<span className="required">*</span></label>
+                          <label className="form-label">Timestamp<span className="required">*</span></label>
                           <input type="text" className="form-control" 
-                          id="email"
-                          name="email" 
-                          value={data.email} 
+                          id="timestamp"
+                          name="timestamp" 
+                          value={data.timestamp} 
                           onChange={(e)=>{
                             handleChange(e)
-                            validate_email(e.target.value)
+                            validate_timestamp(e.target.value)
                           }}    
                           />
-                          {errors.email && 
-                            <div className="error-msg">{errors.email}</div>    
+                          {errors.timestamp && 
+                            <div className="error-msg">{errors.timestamp}</div>    
                           }  	
-                        </div>
-                       
+                        </div>    
+
                         <div className="mb-3">
-                        <label className="form-label">Phone<span className="required">*</span></label>
-                        <input type="text" className="form-control" placeholder=''
-                        id="phone"
-                        name="phone" 
-                        value={data.phone} 
-                        onChange={(e)=>{
-                          handleChange(e)
-                          validate_phone(e.target.value)
-                        }}    
-                        />
-                        {errors.phone && 
-                          <div className="error-msg">{errors.phone}</div>    
-                        } 
-                        </div>  
-                       
-                        <div className="mb-3">
-                          <label className="form-label">Address<span className="required">*</span></label>
-                          <textarea className="form-control" 
-                          rows={5}
-                          id="address"
-                          name="address" 
-                          value={data.address} 
+                          <label className="form-label">IP Address<span className="required">*</span></label>
+                          <input type="text" className="form-control" 
+                          id="ip_address"
+                          name="ip_address" 
+                          value={data.ip_address} 
                           onChange={(e)=>{
-                            handleChange(e)  
-                            validate_address(e.target.value)           
+                            handleChange(e)
+                            validate_ip_address(e.target.value)
                           }}    
                           />
-                          {errors.address && 
-                            <div className="error-msg">{errors.address}</div>    
+                          {errors.ip_address && 
+                            <div className="error-msg">{errors.ip_address}</div>    
                           }  	
-                        </div>
+                        </div>                       
+                                              
                        
                         <div className="mb-3">
-                          <label className="form-label">Status</label>
+                          <label className="form-label">Note</label>
                           <select className="form-select"
                           id="status" 
                           name="status" 
                           value={data.status}  
-                          onChange={handleChange}
+                          onChange={(e)=>{
+                            handleChange(e)
+                            validate_status(e.target.value)
+                          }}    
                           >
-                          <option value="">-</option>                          
-                          <option value="1">Active</option>  
-                          <option value="0">In-Active</option>      
+                          <option value="">Status</option>
+                          {
+                            statusArr.map((val,i)=>{
+                              return(
+                                <option key={i} value={val}>{val}</option>
+                              )
+                            })
+                          }                                
                           </select>
                           {errors.status && 
                             <div className="error-msg">{errors.status}</div>    
                           }  	
-                        </div>                       
+                        </div>
                       
                         <div className="mb-3">
                           <button type="submit" className="btn btn-primary radius-50 px-3 px-md-5" disabled={disablebutton}>Save</button>
@@ -362,5 +368,5 @@ const Company_form = (props)=>{
     );
  
 }
-export default Company_form;
+export default Camsense_devicedata_form;
 

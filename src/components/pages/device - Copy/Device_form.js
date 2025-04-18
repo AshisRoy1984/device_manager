@@ -5,7 +5,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import Api from '../../../config/Api';
 import validation from '../../../config/validation';
 import Meta from '../../common/Meta'; 
-import all_function from '../../../config/all_function';
 
 const Device_form = (props)=>{ 
 
@@ -22,9 +21,6 @@ const Device_form = (props)=>{
     device_id: '',  
     device_name:'',
     device_location:'',
-    device_type:'',
-    threshold:'',
-    trigger:'',
     unit:'',
     note:'',
     status:'',   
@@ -35,21 +31,17 @@ const Device_form = (props)=>{
     device_id: '',  
     device_name:'',
     device_location:'',
-    device_type:'',
-    threshold:'',
-    trigger:'',
     unit:'',
     note:'',
     status:'',   
   }
 
-  const [data, set_data] = useState(__data)  
+  const [data, set_data] = useState(__data)   
+  const [companies, set_companies] = useState([])  
   const [disablebutton, set_disablebutton] = useState(false);   
   const [common_error, set_common_error] = useState("")  
   const [errors,set_errors] = useState(__errors) 
-  const [submitted, set_submitted] = useState(false);   
-  const device_types = all_function.device_types() ?? []   
-  const [companies, set_companies] = useState([])  
+  const [submitted, set_submitted] = useState(false);     
  
 	useEffect(() => {	
     if(id){
@@ -74,9 +66,6 @@ const Device_form = (props)=>{
           device_id: resData.device_id,  
           device_name: resData.device_name,  
           device_location: resData.device_location,  
-          device_type: resData.device_type,  
-          threshold: resData.threshold,  
-          trigger: resData.trigger, 
           unit: resData.unit,  
           note: resData.note,  
           status: resData.status,            
@@ -158,19 +147,6 @@ const Device_form = (props)=>{
       return err;	
   }
 
-  const validate_device_type = (value)=>{	
-      let err = '';          
-      let device_type = value ?? data.device_type
-      if(!device_type){ 
-        err  = 'Device Type is required';  
-      } 
-      set_errors({
-        ...errors,
-        device_type:err
-      });	  
-      return err;	
-  }
-
   const validate_unit = (value)=>{	
       let err = '';          
       let unit = value ?? data.unit
@@ -182,9 +158,8 @@ const Device_form = (props)=>{
         unit:err
       });	  
       return err;	
-  }  
+  }
 
-  
   const validateForm = ()=>{		
 
     let errors  = {};  
@@ -214,12 +189,6 @@ const Device_form = (props)=>{
       isValid = false;
     }
 
-    let device_type = validate_device_type()
-    if( device_type !==''){
-      errors.device_type = device_type;
-      isValid = false;
-    }
-
     let unit = validate_unit()
     if( unit !==''){
       errors.unit = unit;
@@ -244,11 +213,8 @@ const Device_form = (props)=>{
               device_id:data.device_id,
               device_name:data.device_name,
               device_location:data.device_location,
-              device_type:data.device_type,
-              note:data.note,  
-              unit:data.unit,                       
-              threshold:data.threshold,
-              trigger:data.trigger,              
+              unit:data.unit,
+              note:data.note ?? '',            
               status: (data.status=='') ? 0 : data.status,              
             });
             
@@ -270,11 +236,8 @@ const Device_form = (props)=>{
               device_id:data.device_id,
               device_name:data.device_name,
               device_location:data.device_location,
-              device_type:data.device_type,
-              note:data.note,  
-              unit:data.unit,                       
-              threshold:data.threshold,
-              trigger:data.trigger,              
+              unit:data.unit,
+              note:data.note ?? '',            
               status: (data.status=='') ? 0 : data.status,                       
             });
             
@@ -413,62 +376,6 @@ const Device_form = (props)=>{
                           <div className="error-msg">{errors.device_location}</div>    
                         } 
                         </div>  
-
-                        <div className="mb-3">
-                          <label className="form-label">Device Type</label>
-                          <select className="form-select"
-                          id="device_type" 
-                          name="device_type" 
-                          value={data.device_type}  
-                          onChange={(e)=>{
-                            handleChange(e)
-                            validate_device_type(e.target.value)
-                          }}    
-                          >
-                          <option value="">-</option>   
-                          {
-                              device_types.map((val,i)=>{
-                                  return(
-                                      <option key={i} value={val}>{val}</option>
-                                  )
-                              })
-                          }              
-                          </select>
-                          {errors.device_type && 
-                            <div className="error-msg">{errors.device_type}</div>    
-                          }  	
-                        </div>    
-
-                        <div className="mb-3">
-                        <label className="form-label">Threshold</label>
-                        <input type="text" className="form-control" placeholder=''
-                        id="threshold"
-                        name="threshold" 
-                        value={data.threshold} 
-                        onChange={(e)=>{
-                          handleChange(e)                          
-                        }}    
-                        />
-                        {errors.threshold && 
-                          <div className="error-msg">{errors.threshold}</div>    
-                        } 
-                        </div> 
-
-
-                        <div className="mb-3">
-                        <label className="form-label">Trigger</label>
-                        <input type="text" className="form-control" placeholder=''
-                        id="trigger"
-                        name="trigger" 
-                        value={data.trigger} 
-                        onChange={(e)=>{
-                          handleChange(e)                          
-                        }}    
-                        />
-                        {errors.trigger && 
-                          <div className="error-msg">{errors.trigger}</div>    
-                        } 
-                        </div>   
 
                         <div className="mb-3">
                         <label className="form-label">Unit<span className="required">*</span></label>

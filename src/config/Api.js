@@ -114,7 +114,7 @@ export default {
   //=== my profile ===
   update_profile: async (obj) => { 
     return await axiosInstance.patch(
-      "/users/"+obj.id,
+      "/users/"+obj.id+"/",
       {
         'username':obj.username,
         'email':obj.email,
@@ -126,7 +126,7 @@ export default {
   },  
   update_password: async (obj) => {     
     return await axiosInstance.patch(
-      "/users/"+obj.id,
+      "/users/"+obj.id+"/",
       {
         'password':obj.password,        
       },     
@@ -169,8 +169,7 @@ export default {
   create_company: async (obj) => { 
     return await axiosInstance.post(
       "/companies/",
-      { 
-        'company':obj.company,        
+      {         
         'name':obj.name,        
         'email':obj.email,  
         'phone':obj.phone,   
@@ -183,9 +182,8 @@ export default {
   },  
   update_company: async (obj) => { 
     return await axiosInstance.patch(
-      "/companies/"+obj.id,
+      "/companies/"+obj.id+"/",
       { 
-        'company':obj.company,               
         'name':obj.name,        
         'email':obj.email,  
         'phone':obj.phone,   
@@ -203,8 +201,9 @@ export default {
       `/company-devices/${ obj.page ? '?page='+ obj.page : ''}`,
       {
         params: {
-          company:obj.company,
+          company:obj.company,         
           device_id:obj.device_id,
+          device_type:obj.device_type,
           device_name:obj.device_name,
           device_location:obj.device_location,
           unit:obj.unit,
@@ -238,9 +237,12 @@ export default {
         'device_id':obj.device_id,        
         'device_name':obj.device_name,  
         'device_location':obj.device_location,   
-        'unit':obj.unit,   
-        'note':obj.note, 
-        'status':obj.status, 
+        'device_type':obj.device_type,   
+        'note':obj.note,   
+        'status':obj.status,   
+        'threshold':obj.threshold,   
+        'trigger':obj.trigger,   
+        'unit':obj.unit,         
       },
       {headers:headers1}        
     )
@@ -248,15 +250,28 @@ export default {
   },  
   update_company_device: async (obj) => { 
     return await axiosInstance.patch(
-      "/company-devices/"+obj.id,
+      "/company-devices/"+obj.id+"/",
       {        
         'company':obj.company,               
         'device_id':obj.device_id,        
         'device_name':obj.device_name,  
         'device_location':obj.device_location,   
-        'unit':obj.unit,   
-        'note':obj.note, 
-        'status':obj.status, 
+        'device_type':obj.device_type,   
+        'note':obj.note,   
+        'status':obj.status,   
+        'threshold':obj.threshold,   
+        'trigger':obj.trigger,   
+        'unit':obj.unit,         
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  }, 
+  assign_device: async (obj) => { 
+    return await axiosInstance.patch(
+      "/company-devices/"+obj.id+"/",
+      {        
+        'company':obj.company,
       },
       {headers:headers1}        
     )
@@ -313,53 +328,58 @@ export default {
   }, 
 
   //=== device-sensor-data  ===  
-  device_sensor_data: async (obj) => { 
+  camsense_device_sensor_data: async (obj) => { 
     return await axiosInstance.get(
-      `/device-sensor-data/${ obj.page ? '?page='+ obj.page : ''}`,
+      `/camsense/${ obj.page ? '?page='+ obj.page : ''}`,
       {
         params: {
-          value:obj.value,
-          time: obj.time,
-          device: obj.device,          
+          device:obj.device, 
+          timestamp_after: obj.timestamp_after,
+          timestamp_before: obj.timestamp_before,
+          status: obj.status,          
         }
       },
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
   }, 
-  delete_device_sensor_data: async (obj) => { 
+  delete_camsense_device_sensor_data: async (obj) => { 
     return await axiosInstance.delete(
-      "/device-sensor-data/"+obj.id,      
+      "/camsense/"+obj.id,      
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
   },
-  device_sensor_data_row: async (obj) => { 
+  camsense_device_sensor_data_row: async (obj) => { 
     return await axiosInstance.get(
-      "/device-sensor-data/"+obj.id,
+      "/camsense/"+obj.id,
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
  }, 
- create_device_sensor_data: async (obj) => { 
+ create_camsense_device_sensor_data: async (obj) => { 
     return await axiosInstance.post(
-      "/device-sensor-data/",
+      "/camsense/",
       {        
-        'device':obj.device,        
-        'value':obj.value,  
-        'note':obj.note,   
+        'device':obj.device,
+        'count':obj.count,
+        'timestamp':obj.timestamp,
+        'ip_address':obj.ip_address,
+        'status':obj.status,          
       },
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
   },  
-  update_device_sensor_data: async (obj) => { 
+  update_camsense_device_sensor_data: async (obj) => { 
     return await axiosInstance.patch(
-      "/device-sensor-data/"+obj.id,
-      {        
-        'device':obj.device,        
-        'value':obj.value,  
-        'note':obj.note,   
+      "/camsense/"+obj.id+"/",
+      { 
+        'device':obj.device,
+        'count':obj.count,
+        'timestamp':obj.timestamp,
+        'ip_address':obj.ip_address,
+        'status':obj.status,          
       },
       {headers:headers1}        
     )

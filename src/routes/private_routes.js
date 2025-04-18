@@ -16,8 +16,8 @@ import Company_devices_form from '../components/pages/company_devices/Company_de
 import Device_list from '../components/pages/device/Device_list';
 import Device_form from '../components/pages/device/Device_form';
 
-import Devicedata_list from '../components/pages/devicedata/Devicedata_list';
-import Devicedata_form from '../components/pages/devicedata/Devicedata_form';
+import Camsense_devicedata_list from '../components/pages/devicedata/Camsense_devicedata_list';
+import Camsense_devicedata_form from '../components/pages/devicedata/Camsense_devicedata_form';
 
 
 const routes = [    
@@ -50,9 +50,13 @@ const routes = [
   {path: '/edit-device/:id', exact: true, component: Device_form },  
 
   //=== device data
-  {path: '/device-data/:device', exact: true, component: Devicedata_list }, 
-  {path: '/add-device-data/:device', exact: true, component: Devicedata_form },  
-  {path: '/edit-device-data/:device/:id', exact: true, component: Devicedata_form },  
+  // {path: '/device-data/:device', exact: true, component: Devicedata_list }, 
+  // {path: '/add-device-data/:device', exact: true, component: Devicedata_form },  
+  // {path: '/edit-device-data/:device/:id', exact: true, component: Devicedata_form },  
+
+  {path: '/camsense-device-data/:device', exact: true, component: Camsense_devicedata_list }, 
+  {path: '/add-camsense-device-data/:device', exact: true, component: Camsense_devicedata_form },  
+  {path: '/edit-camsense-device-data/:device/:id', exact: true, component: Camsense_devicedata_form }, 
   
 ];
 
