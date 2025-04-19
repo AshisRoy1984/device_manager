@@ -327,7 +327,51 @@ export default {
     .catch((err) => { console.log('err', err); });    
   }, 
 
-  //=== device-sensor-data  ===  
+  //=== permission  ===  
+  permission: async (obj) => { 
+    return await axiosInstance.get(
+      `/normal-user-permissions/${ obj.page ? '?page='+ obj.page : ''}`,
+      {
+        params: {
+          user:obj.user,         
+        }
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  }, 
+  delete_permission: async (obj) => { 
+    return await axiosInstance.delete(
+      "/normal-user-permissions/"+obj.id,      
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },
+  permission_row: async (obj) => { 
+    return await axiosInstance.get(
+      "/normal-user-permissions/"+obj.id,
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+ }, 
+ create_permission: async (obj) => { 
+    return await axiosInstance.post(
+      "/normal-user-permissions/",
+      obj,
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },  
+  update_permission: async (obj,id) => { 
+    return await axiosInstance.patch(
+      "/normal-user-permissions/"+id,
+      obj,
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  }, 
+
+  //=== camsense_device_sensor_data  ===  
   camsense_device_sensor_data: async (obj) => { 
     return await axiosInstance.get(
       `/camsense/${ obj.page ? '?page='+ obj.page : ''}`,
@@ -386,45 +430,57 @@ export default {
     .catch((err) => { console.log('err', err); });    
   }, 
 
-  //=== permission  ===  
-  permission: async (obj) => { 
+  //=== weightsense_device_sensor_data  ===  
+  weightsense_device_sensor_data: async (obj) => { 
     return await axiosInstance.get(
-      `/normal-user-permissions/${ obj.page ? '?page='+ obj.page : ''}`,
+      `/weightsense/${ obj.page ? '?page='+ obj.page : ''}`,
       {
         params: {
-          user:obj.user,         
+          device:obj.device, 
+          timestamp_after: obj.timestamp_after,
+          timestamp_before: obj.timestamp_before,          
         }
       },
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
   }, 
-  delete_permission: async (obj) => { 
+  delete_weightsense_device_sensor_data: async (obj) => { 
     return await axiosInstance.delete(
-      "/normal-user-permissions/"+obj.id,      
+      "/weightsense/"+obj.id,      
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
   },
-  permission_row: async (obj) => { 
+  weightsense_device_sensor_data_row: async (obj) => { 
     return await axiosInstance.get(
-      "/normal-user-permissions/"+obj.id,
+      "/weightsense/"+obj.id,
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
  }, 
- create_permission: async (obj) => { 
+ create_weightsense_device_sensor_data: async (obj) => { 
     return await axiosInstance.post(
-      "/normal-user-permissions/",
-      obj,
+      "/weightsense/",
+      {        
+        'device':obj.device,
+        'weight':obj.weight,
+        'timestamp':obj.timestamp,
+        'ip_address':obj.ip_address,        
+      },
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    
   },  
-  update_permission: async (obj,id) => { 
+  update_weightsense_device_sensor_data: async (obj) => { 
     return await axiosInstance.patch(
-      "/normal-user-permissions/"+id,
-      obj,
+      "/weightsense/"+obj.id+"/",
+      { 
+        'device':obj.device,
+        'weight':obj.weight,
+        'timestamp':obj.timestamp,
+        'ip_address':obj.ip_address,        
+      },
       {headers:headers1}        
     )
     .catch((err) => { console.log('err', err); });    

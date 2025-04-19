@@ -12,7 +12,7 @@ import Meta from '../../common/Meta';
 import Loader from '../../common/Loader'; 
 import Chart from 'react-apexcharts'
 
-const Camsense_devicedata_list = (props)=>{   
+const Weightsense_devicedata_list = (props)=>{   
 
     const { device } = useParams();  
 
@@ -27,8 +27,7 @@ const Camsense_devicedata_list = (props)=>{
     const __filterData = {
         page:queryParams.get('page') ?? 1,	
         timestamp_after:queryParams.get('timestamp_after') ?? '',	
-        timestamp_before:queryParams.get('timestamp_before') ?? '',
-        status:queryParams.get('status') ?? '',
+        timestamp_before:queryParams.get('timestamp_before') ?? '',        
     }
 
     const [filterData, set_filterData] = useState(__filterData)     
@@ -38,8 +37,7 @@ const Camsense_devicedata_list = (props)=>{
     const [next, set_next] = useState("");   
     const [previous, set_previous] = useState("");  
     const [loader, set_loader] = useState(true);   
-    const [page, set_page] = useState(__filterData.page);    
-    const statusArr = ['STUCK','MOTION','DEFAULT']
+    const [page, set_page] = useState(__filterData.page); 
     const [autorefresh, set_autorefresh] = useState(false);   
 
     const MySwal = withReactContent(Swal)
@@ -52,8 +50,7 @@ const Camsense_devicedata_list = (props)=>{
         fetchData(page)        
     },[]);
 
-    useEffect(() => {
-      console.log(autorefresh)
+    useEffect(() => {      
       if(autorefresh){
         const interval = setInterval(() => {
           fetchData(page)    
@@ -80,16 +77,15 @@ const Camsense_devicedata_list = (props)=>{
         })       
         const deviceRow = res.data; 
         if(deviceRow){
-              const res = await Api.camsense_device_sensor_data({
+              const res = await Api.weightsense_device_sensor_data({
                   device:deviceRow.device_id,  
                   timestamp_after:filterData.timestamp_after,
-                  timestamp_before:filterData.timestamp_before,
-                  status:filterData.status,
+                  timestamp_before:filterData.timestamp_before,                 
                   page:page,
               })
               if( res && (res.status === 200) ){
-                  const resData = res.data; 
-                  console.log(resData)
+                  const resData = res.data;   
+                  console.log(resData)               
                   set_total(resData.count)
                   set_next(resData.next)
                   set_previous(resData.previous)
@@ -128,10 +124,7 @@ const Camsense_devicedata_list = (props)=>{
         }  
         if(filterData.timestamp_before){			
             location.searchParams.set('timestamp_before', filterData.timestamp_before);        
-        } 
-        if(filterData.status){			
-          location.searchParams.set('status', filterData.status);        
-        } 
+        }         
         window.history.pushState({},'', location);
 	  }
 
@@ -160,7 +153,7 @@ const Camsense_devicedata_list = (props)=>{
 
           if (result.isConfirmed) {
             
-            const res = await Api.delete_camsense_device_sensor_data({  
+            const res = await Api.delete_weightsense_device_sensor_data({  
                 id:id,
             });
                                     
@@ -182,10 +175,10 @@ const Camsense_devicedata_list = (props)=>{
     var map_data = []
     data.map((val,i)=>{
       let time = all_function.getDateTime(val.timestamp)
-      map_data[i] = { time:time, value:val.count }
+      map_data[i] = { time:time, value:val.weight }
     })
-    map_data.sort((a, b) => a.time < b.time ? -1 : (a.time > b.time ? 1 : 0))    
-
+    map_data.sort((a, b) => a.time < b.time ? -1 : (a.time > b.time ? 1 : 0)) 
+    
     var categories = []
     map_data.map((val,i)=>{      
       categories[i] = val.time
@@ -249,7 +242,7 @@ const Camsense_devicedata_list = (props)=>{
           },
           yaxis: {
             title: {
-              text: 'Count'
+              text: 'Weight'
             },
             min: 0,
             max: max_series
@@ -264,7 +257,7 @@ const Camsense_devicedata_list = (props)=>{
         },
         series: [
           {
-            name: "Count",
+            name: "Weight",
             data: series, //[28, 29, 33, 36, 32, 32, 33]
           }          
         ],
@@ -377,24 +370,7 @@ const Camsense_devicedata_list = (props)=>{
                                         name="timestamp_before" 
                                         value={filterData.timestamp_before}  
                                         onChange={handleChange} />
-                                    </div>
-                                    <div className="me-3" >
-                                        <select className="form-select" style={{width:"150px"}}
-                                        id="status" 
-                                        name="status" 
-                                        value={filterData.status}  
-                                        onChange={handleChange}
-                                        >
-                                        <option value="">Status</option>
-                                        {
-                                          statusArr.map((val,i)=>{
-                                            return(
-                                              <option key={i} value={val}>{val}</option>
-                                            )
-                                          })
-                                        }                                
-                                        </select>
-                                    </div>   
+                                    </div>                                    
                                     <div className="me-3">
                                     <button type="submit" className="btn btn-primary radius-50 px-3 px-md-5">Filter</button>
                                     </div>
@@ -417,8 +393,8 @@ const Camsense_devicedata_list = (props)=>{
                                   />
                                   <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Auto Refresh</label>
                                 </div>   
-                                {/* <div className="group ps-2 ps-md-4">                            
-                                    <Link className="btn btn-secondary radius-50 px-3" to={`/add-camsense-device-data/${device}`}>+ Add New</Link>  
+                                 {/* <div className="group ps-2 ps-md-4">                            
+                                    <Link className="btn btn-secondary radius-50 px-3" to={`/add-weightsense-device-data/${device}`}>+ Add New</Link>  
                                 </div> */}
                             </div>
                         </div>
@@ -432,16 +408,15 @@ const Camsense_devicedata_list = (props)=>{
                                         <tr className="table-active">
                                             <th scope="col" className="text-uppercase">#</th>                                             
                                             <th scope="col" className="text-uppercase">Time</th> 
-                                            <th scope="col" className="text-uppercase text-center">Count</th>
-                                            <th scope="col" className="text-uppercase text-center">IP Aaddress</th>  
-                                            <th scope="col" className="text-uppercase text-center">Status</th>  
+                                            <th scope="col" className="text-uppercase text-center">Weight</th>
+                                            <th scope="col" className="text-uppercase text-center">IP Aaddress</th> 
                                             <th scope="col" className="text-uppercase text-center">Action</th>                                  
                                         </tr>
                                     </thead>
                                     <tbody>
                                     { loader ? 
                                         <tr key={0}>
-                                        <td colSpan={6}>
+                                        <td colSpan={5}>
                                         <Loader text="" /> 
                                         </td>
                                         </tr>
@@ -452,12 +427,11 @@ const Camsense_devicedata_list = (props)=>{
                                                 <tr key={index}>
                                                     <td>{sl_no++}</td> 
                                                     <td>{all_function.getFormattedDate(doc.timestamp)}</td>
-                                                    <td className="text-center">{doc.count}</td> 
-                                                    <td className="text-center">{doc.ip_address}</td>    
-                                                    <td className="text-center">{doc.status}</td>                                                          
+                                                    <td className="text-center">{doc.weight}</td> 
+                                                    <td className="text-center">{doc.ip_address}</td>   
                                                     <td className="text-center">
 
-                                                        <Link title="Edit" to={`/edit-camsense-device-data/${device}/${doc.id}`} >
+                                                        <Link title="Edit" to={`/edit-weightsense-device-data/${device}/${doc.id}`} >
                                                         <i className="bi bi-pencil-square text-primary"></i>
                                                         </Link>  
 
@@ -472,7 +446,7 @@ const Camsense_devicedata_list = (props)=>{
                                             ))
                                             :
                                             <tr>
-                                                <td colSpan={6}>
+                                                <td colSpan={5}>
                                                 No Record Found.
                                                 </td>
                                             </tr>                                          
@@ -481,7 +455,7 @@ const Camsense_devicedata_list = (props)=>{
                                         { 
                                             total_page > 1 &&    
                                             <tr>
-                                            <td colSpan={6} className="pt-3">
+                                            <td colSpan={5} className="pt-3">
                                                 <div className="col-md-12">                                  
                                                 <div className="card-body table-responsive px-2">                                        
                                                 <div className="text-end">
@@ -522,5 +496,5 @@ const Camsense_devicedata_list = (props)=>{
   );
  
 }
-export default Camsense_devicedata_list;
+export default Weightsense_devicedata_list;
 

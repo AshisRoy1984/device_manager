@@ -7,7 +7,7 @@ import validation from '../../../config/validation';
 import Meta from '../../common/Meta'; 
 import all_function from '../../../config/all_function';
 
-const Camsense_devicedata_form = (props)=>{ 
+const Weightsense_devicedata_form = (props)=>{ 
 
   const { device, id } = useParams();  
 
@@ -18,17 +18,15 @@ const Camsense_devicedata_form = (props)=>{
   }   
 
   const __data = { 
-    count:'',
+    weight:'',
     timestamp:'',
-    ip_address:'',
-    status:'',    
+    ip_address:'',    
   }
 
   const __errors = {	
-    count:'',
+    weight:'',
     timestamp:'',
-    ip_address:'',
-    status:'',    
+    ip_address:'',    
   }
 
   const [data, set_data] = useState(__data)   
@@ -36,8 +34,7 @@ const Camsense_devicedata_form = (props)=>{
   const [disablebutton, set_disablebutton] = useState(false);   
   const [common_error, set_common_error] = useState("")  
   const [errors,set_errors] = useState(__errors) 
-  const [submitted, set_submitted] = useState(false);   
-  const statusArr = ['STUCK','MOTION','DEFAULT']  
+  const [submitted, set_submitted] = useState(false);  
  
 	useEffect(() => {	
     if(id){
@@ -51,17 +48,16 @@ const Camsense_devicedata_form = (props)=>{
 
   const fetchData = async (id)=>{ 		
 		try{				
-			const res = await Api.camsense_device_sensor_data_row({
+			const res = await Api.weightsense_device_sensor_data_row({
         id:id,       
 			});
       
 			if( res && (res.status === 200) ){				
 				let resData = res.data
 				set_data({
-          count:resData.count,
+          weight:resData.weight,
           timestamp:resData.timestamp,
-          ip_address:resData.ip_address,
-          status:resData.status,    
+          ip_address:resData.ip_address,          
         })				
 			}			
 		}
@@ -85,15 +81,15 @@ const Camsense_devicedata_form = (props)=>{
     set_data({...data, [field_name]: field_value})
   }	
 
-  const validate_count = (value)=>{	
+  const validate_weight = (value)=>{	
       let err = '';          
-      let count = value ?? data.count
-      if(!count){ 
-        err  = 'Count is required';  
+      let weight = value ?? data.weight
+      if(!weight){ 
+        err  = 'Weight is required';  
       } 
       set_errors({
         ...errors,
-        count:err
+        weight:err
       });	  
       return err;	
   }
@@ -124,27 +120,14 @@ const Camsense_devicedata_form = (props)=>{
       return err;	
   }
 
-  const validate_status = (value)=>{	
-      let err = '';          
-      let status = value ?? data.status
-      if(!status){ 
-        err  = 'Status is required';  
-      } 
-      set_errors({
-        ...errors,
-        status:err
-      });	  
-      return err;	
-  }
-
   const validateForm = ()=>{		
 
     let errors  = {};  
     let isValid  = true;  
 
-    let count = validate_count()
-    if( count !=='' ){
-      errors.count = count;
+    let weight = validate_weight()
+    if( weight !=='' ){
+      errors.weight = weight;
       isValid = false;
     }
 
@@ -159,13 +142,7 @@ const Camsense_devicedata_form = (props)=>{
       errors.ip_address = ip_address;
       isValid = false;
     }
-
-    let status = validate_status()
-    if( status !=='' ){
-      errors.status = status;
-      isValid = false;
-    }
-
+    
     set_errors(errors);	
     return isValid        
   }
@@ -178,13 +155,12 @@ const Camsense_devicedata_form = (props)=>{
 
         if(id){
 
-            const res = await Api.update_camsense_device_sensor_data({   
+            const res = await Api.update_weightsense_device_sensor_data({   
               id:id,
               device:deviceRow.device_id,
-              count:data.count,
+              weight:data.weight,
               timestamp:data.timestamp,
-              ip_address:data.ip_address,
-              status:data.status,    
+              ip_address:data.ip_address,              
             });
             
             if( res && (res.status === 200) ){              
@@ -200,12 +176,11 @@ const Camsense_devicedata_form = (props)=>{
         }
         else{
 
-            const res = await Api.create_camsense_device_sensor_data({ 
+            const res = await Api.create_weightsense_device_sensor_data({ 
               device:deviceRow.device_id,
-              count:data.count,
+              weight:data.weight,
               timestamp:data.timestamp,
-              ip_address:data.ip_address,
-              status:data.status,          
+              ip_address:data.ip_address,              
             });           
             
             if( res && (res.status === 200 || res.status === 201) ){
@@ -229,7 +204,7 @@ const Camsense_devicedata_form = (props)=>{
   }	
 
   if( submitted ){
-    return <Navigate  to={`/camsense-device-data/${device}`} />			
+    return <Navigate  to={`/weightsense-device-data/${device}`} />			
   }
 
   return (   
@@ -254,7 +229,7 @@ const Camsense_devicedata_form = (props)=>{
         <ol className="breadcrumb">
             <li className="breadcrumb-item"><Link to="/"><i className="bi bi-house-door"></i></Link></li>
             <li className="breadcrumb-item"><Link to="/devices">Devices</Link></li>
-            <li className="breadcrumb-item"><Link to={`/camsense-device-data/${device}`}>Device data</Link></li>            
+            <li className="breadcrumb-item"><Link to={`/weightsense-device-data/${device}`}>Device data</Link></li>            
             <li className="breadcrumb-item active">
             {
               id ? 'Edit Device data' : 'Add Device data'
@@ -280,18 +255,18 @@ const Camsense_devicedata_form = (props)=>{
                     <form method="post" onSubmit={handleSubmit}>   
                         
                         <div className="mb-3">
-                          <label className="form-label">Count<span className="required">*</span></label>
+                          <label className="form-label">Weight<span className="required">*</span></label>
                           <input type="text" className="form-control" 
-                          id="count"
-                          name="count" 
-                          value={data.count} 
+                          id="weight"
+                          name="weight" 
+                          value={data.weight} 
                           onChange={(e)=>{
                             handleChange(e)
-                            validate_count(e.target.value)
+                            validate_weight(e.target.value)
                           }}    
                           />
-                          {errors.count && 
-                            <div className="error-msg">{errors.count}</div>    
+                          {errors.weight && 
+                            <div className="error-msg">{errors.weight}</div>    
                           }  	
                         </div>    
 
@@ -325,33 +300,7 @@ const Camsense_devicedata_form = (props)=>{
                           {errors.ip_address && 
                             <div className="error-msg">{errors.ip_address}</div>    
                           }  	
-                        </div>                       
-                                              
-                       
-                        <div className="mb-3">
-                          <label className="form-label">Status</label>
-                          <select className="form-select"
-                          id="status" 
-                          name="status" 
-                          value={data.status}  
-                          onChange={(e)=>{
-                            handleChange(e)
-                            validate_status(e.target.value)
-                          }}    
-                          >
-                          <option value="">Status</option>
-                          {
-                            statusArr.map((val,i)=>{
-                              return(
-                                <option key={i} value={val}>{val}</option>
-                              )
-                            })
-                          }                                
-                          </select>
-                          {errors.status && 
-                            <div className="error-msg">{errors.status}</div>    
-                          }  	
-                        </div>
+                        </div>                          
                       
                         <div className="mb-3">
                           <button type="submit" className="btn btn-primary radius-50 px-3 px-md-5" disabled={disablebutton}>Save</button>
@@ -368,5 +317,5 @@ const Camsense_devicedata_form = (props)=>{
     );
  
 }
-export default Camsense_devicedata_form;
+export default Weightsense_devicedata_form;
 

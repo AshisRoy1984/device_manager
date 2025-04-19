@@ -19,6 +19,9 @@ import Device_form from '../components/pages/device/Device_form';
 import Camsense_devicedata_list from '../components/pages/devicedata/Camsense_devicedata_list';
 import Camsense_devicedata_form from '../components/pages/devicedata/Camsense_devicedata_form';
 
+import Weightsense_devicedata_list from '../components/pages/devicedata/Weightsense_devicedata_list';
+import Weightsense_devicedata_form from '../components/pages/devicedata/Weightsense_devicedata_form';
+
 
 const routes = [    
 
@@ -57,6 +60,10 @@ const routes = [
   {path: '/camsense-device-data/:device', exact: true, component: Camsense_devicedata_list }, 
   {path: '/add-camsense-device-data/:device', exact: true, component: Camsense_devicedata_form },  
   {path: '/edit-camsense-device-data/:device/:id', exact: true, component: Camsense_devicedata_form }, 
+
+  {path: '/weightsense-device-data/:device', exact: true, component: Weightsense_devicedata_list }, 
+  {path: '/add-weightsense-device-data/:device', exact: true, component: Weightsense_devicedata_form },  
+  {path: '/edit-weightsense-device-data/:device/:id', exact: true, component: Weightsense_devicedata_form }, 
   
 ];
 
