@@ -8,7 +8,7 @@ const Footer = (props)=> {
 		<>
 		<footer id="footer" className="footer">
 			<div className="copyright">
-			© 2025 Device, All Rights Reserved.
+			© 2025 AGI Smartech, All Rights Reserved.
 			</div>
 			{/* <div className="credits">     
 			Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>

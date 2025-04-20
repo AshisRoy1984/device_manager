@@ -23,6 +23,8 @@ import Weightsense_devicedata_list from '../components/pages/devicedata/Weightse
 import Weightsense_devicedata_form from '../components/pages/devicedata/Weightsense_devicedata_form';
 
 
+import Registereddevice_list from '../components/pages/device/Registereddevice_list';
+
 const routes = [    
 
   {path: '/', exact: true, component: Dashboard },   
@@ -51,6 +53,8 @@ const routes = [
   {path: '/devices', exact: true, component: Device_list },   
   {path: '/add-device', exact: true, component: Device_form },  
   {path: '/edit-device/:id', exact: true, component: Device_form },  
+  
+
 
   //=== device data
   // {path: '/device-data/:device', exact: true, component: Devicedata_list }, 
@@ -64,6 +68,9 @@ const routes = [
   {path: '/weightsense-device-data/:device', exact: true, component: Weightsense_devicedata_list }, 
   {path: '/add-weightsense-device-data/:device', exact: true, component: Weightsense_devicedata_form },  
   {path: '/edit-weightsense-device-data/:device/:id', exact: true, component: Weightsense_devicedata_form }, 
+
+  
+  {path: '/registered-devices', exact: true, component: Registereddevice_list  }, 
   
 ];
 

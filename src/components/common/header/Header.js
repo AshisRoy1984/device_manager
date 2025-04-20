@@ -37,7 +37,7 @@ let Header = (props) =>{
 		<header id="header" className="header fixed-top d-flex align-items-center">
 		<div className="d-flex align-items-center justify-content-between">
 		<Link to="/" className="logo d-flex align-items-center ms-3">
-		<img src="/assets/img/logo.png" alt="" style={{maxHeight:"35px"}} />		
+		<img src="/assets/img/logo.png" alt="" style={{maxHeight:"45px"}} /> AGISmartec		
 		</Link>
 		<i className="bi bi-list toggle-sidebar-btn" onClick={()=>toggleSidebar(is_sidebar)}></i>
 		</div>        
@@ -45,7 +45,7 @@ let Header = (props) =>{
 		{/*search-bar
 		<SearchBar />
 		*/}		
-
+		
 		<nav className="header-nav ms-auto">
 		<ul className="d-flex align-items-center">
 

@@ -23,7 +23,8 @@ axiosInstance.interceptors.response.use(
           if(typeof response !== "undefined" && response.status === 401){  
             localStorage.removeItem(process.env.REACT_APP_PREFIX + 'access_token');	
             localStorage.removeItem(process.env.REACT_APP_PREFIX + 'refresh_token');            
-            localStorage.removeItem(process.env.REACT_APP_PREFIX + 'user_id');            
+            localStorage.removeItem(process.env.REACT_APP_PREFIX + 'user_id');
+            localStorage.removeItem(process.env.REACT_APP_PREFIX + 'user_role');            
           }
           return response
       } catch (err) {
@@ -194,6 +195,51 @@ export default {
     )
     .catch((err) => { console.log('err', err); });    
   }, 
+
+  //== Registered Devices ==//
+
+  registered_devices: async (obj) => { 
+    return await axiosInstance.get(
+      `/registered-devices/${ obj.page ? '?page='+ obj.page : ''}`,
+      {
+        params: {
+          company:obj.company,         
+          device_id:obj.device_id,
+          device_name:obj.device_name,
+          product_line:obj.product_line, 
+          device_type:obj.device_type,
+          country:obj.country,
+          device_location:obj.device_location,
+          deptunit:obj.deptunit,
+          unit:obj.unit,
+          status:obj.status,
+          page_number: obj.page_number,          
+        }
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },
+
+  unregistered_devices: async (obj) => { 
+    return await axiosInstance.get(
+      `/unregistered-devices/${ obj.page ? '?page='+ obj.page : ''}`,
+      {
+        params: {
+          company:obj.company,         
+          device_id:obj.device_id,
+          device_type:obj.device_type,
+          device_name:obj.device_name,
+          device_location:obj.device_location,
+          unit:obj.unit,
+          status:obj.status,
+          page_number: obj.page_number,          
+        }
+      },
+      {headers:headers1}        
+    )
+    .catch((err) => { console.log('err', err); });    
+  },
 
   //=== company-devices ===
   company_devices: async (obj) => { 

@@ -135,6 +135,7 @@ const Login = ()=>{
             const res2Data = res2.data; 
 
             localStorage.setItem(process.env.REACT_APP_PREFIX + 'user_id', res2Data.user_id);   
+            localStorage.setItem(process.env.REACT_APP_PREFIX + 'user_role', res2Data.role); 
             
             if(checked){
               localStorage.setItem(process.env.REACT_APP_PREFIX + 'remember_me','1');

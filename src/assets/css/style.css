@@ -732,6 +732,23 @@ h1, h2, h3, h4, h5, h6 {
   color: #ff771d;
   background: #ffecdf;
 }
+.dashboard .registered-device .card-icon {
+  color: #4154f1;
+  background: #f6f6fe;
+}
+.dashboard .unregistered-device .card-icon {
+  color: #fffb00;
+  background: #fffb003f;
+}
+.dashboard .active-device .card-icon {
+  color: #01772e;
+  background: #01772e30;
+}
+.dashboard .inactive-device .card-icon {
+  color: #ff0000;
+  background: #ff00003f;
+}
+
 
 /* Activity */
 .dashboard .activity {

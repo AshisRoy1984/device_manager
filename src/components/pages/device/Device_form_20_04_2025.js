@@ -21,11 +21,8 @@ const Device_form = (props)=>{
     company: '',  
     device_id: '',  
     device_name:'',
-    product_line:'AGISense',
-    device_type:'',
-    country:'',
     device_location:'',
-    deptunit:'',
+    device_type:'',
     threshold:'',
     trigger:'',
     unit:'',
@@ -37,16 +34,13 @@ const Device_form = (props)=>{
     company: '',  
     device_id: '',  
     device_name:'',
-    product_line:'AGISense',
-    device_type:'',
-    country:'',
     device_location:'',
-    deptunit:'',
+    device_type:'',
     threshold:'',
     trigger:'',
     unit:'',
     note:'',
-    status:'',    
+    status:'',   
   }
 
   const [data, set_data] = useState(__data)  
@@ -79,11 +73,8 @@ const Device_form = (props)=>{
           company: resData.company,  
           device_id: resData.device_id,  
           device_name: resData.device_name,  
-          product_line: resData.product_line,
-          device_type: resData.device_type,  
-          country: resData.country,  
           device_location: resData.device_location,  
-          deptunit: resData.deptunit,  
+          device_type: resData.device_type,  
           threshold: resData.threshold,  
           trigger: resData.trigger, 
           unit: resData.unit,  
@@ -425,7 +416,7 @@ const Device_form = (props)=>{
 
                         <div className="mb-3">
                           <label className="form-label">Device Type</label>
-                          <select className="form-select" disabled
+                          <select className="form-select"
                           id="device_type" 
                           name="device_type" 
                           value={data.device_type}  
